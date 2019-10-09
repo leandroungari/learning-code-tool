@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 
 import styled, { css } from 'styled-components';
-import AutoComplete from './autocomplete/AutoComplete';
-
+import AutoComplete from './autocomplete';
 import { growToRight, decreaseToLeft } from '../animation';
 
 
@@ -67,8 +66,6 @@ export default function TextFieldHeader(props) {
   function onChange(event) {
     const { value } = event.target;
     setText(value);
-    
-    //if(value === '') onHandleDisable();
   }
 
   return (

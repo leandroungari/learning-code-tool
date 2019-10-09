@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import fetch from 'isomorphic-unfetch';
 
 import TopBar from './header/TopBar';
 import TextFieldHeader from './header/TextFieldHeader';
 
-
+import Code from '../assets/images/code-solid.svg'; 
 
 
 function Header(props) {
@@ -13,10 +12,10 @@ function Header(props) {
 
   const getListing = async () => {
     fetch('http://localhost:8080/metrics/listRepositories')
-      .then(result => result.json())
-      .then(result => {
-        setListing(result);
-      });
+    .then(result => result.json())
+    .then(result => {
+      setListing(result);
+    });
   }
 
 
@@ -30,14 +29,17 @@ function Header(props) {
   return (
     <>
       <TopBar>
-        <img src="/static/images/code-solid-white.svg" style={{
-          width: 25,
-          height: 25,
-        }} />
+        <Code 
+          width={25} 
+          height={25} 
+          fill='#fff' 
+        />
         <TextFieldHeader
           placeholder="Search here ..."
           list={listing}
-          clickItemList={(event, value) => { }}
+          clickItemList={(event) => {
+            console.log("teste");
+          }}
         />
       </TopBar>
     </>
