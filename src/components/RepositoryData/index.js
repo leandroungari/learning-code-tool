@@ -1,7 +1,9 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import Container from './Container';
+import {
+  Container
+} from '../../components';
 
 const Title = styled.h1`
   font-size: 24px;

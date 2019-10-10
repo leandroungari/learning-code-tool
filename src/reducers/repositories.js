@@ -1,5 +1,6 @@
 const INITIAL_STATE = {
-  current: null
+  current: null,
+  branches: []
 };
 
 function repositories(state = INITIAL_STATE, action) {
@@ -10,6 +11,12 @@ function repositories(state = INITIAL_STATE, action) {
       return {
         ...state,
         current: action.repository
+      }
+    
+    case 'SET_BRANCHES':
+      return {
+        ...state,
+        branches: action.branches
       }
     
     default:

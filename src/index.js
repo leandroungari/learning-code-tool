@@ -11,14 +11,16 @@ import {
 } from 'react-router-dom';
 
 import {
-  Home
+  Home,
+  Repository
 } from './pages';
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <Switch>
-        <Route path="/" children={() => <Home />} />
+        <Route path="/" exact component={Home} />
+        <Route path="/repository/:name" component={Repository} />
       </Switch>
     </BrowserRouter>
   </Provider>
