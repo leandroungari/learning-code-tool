@@ -3,8 +3,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Container from './Container';
 
-
-
 const Title = styled.h1`
   font-size: 24px;
   color: #000;
@@ -16,9 +14,10 @@ const Description = styled.p`
   color: #555;
 `;
 
-
 export default function RepositoryData({
-  name, numBranches = 0, numCommits = 0
+  name, 
+  numBranches = 0, 
+  numCommits = 0
 }) {
 
   return (

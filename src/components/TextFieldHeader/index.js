@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
 import styled, { css } from 'styled-components';
-import AutoComplete from './autocomplete/AutoComplete';
+import AutoComplete from './autocomplete';
 
-import { growToRight, decreaseToLeft } from '../animation';
+import growToRight from './animation/GrowToRight';
+import decreaseToLeft from './animation/DecreaseToLeft';
 
 
 
@@ -31,7 +32,7 @@ export default function TextFieldHeader(props) {
 
   const { 
     placeholder, 
-    clickItemList, 
+    onClickItem, 
     list 
   } = props;
 
@@ -67,8 +68,6 @@ export default function TextFieldHeader(props) {
   function onChange(event) {
     const { value } = event.target;
     setText(value);
-    
-    //if(value === '') onHandleDisable();
   }
 
   return (
@@ -89,7 +88,7 @@ export default function TextFieldHeader(props) {
         status={status}
         width={width}
         items={list}
-        onClick={clickItemList}
+        onClick={onClickItem}
         currentInput={text}
       />
     </div>

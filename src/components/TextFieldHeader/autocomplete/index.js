@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Link from 'next/link';
 import styled, { css } from 'styled-components';
 
-import { growToRight, decreaseToLeft } from '../../animation';
+import growToRight from '../animation/GrowToRight';
+import decreaseToLeft from '../animation/DecreaseToLeft';
 
 const Container = styled.div`
   position: absolute;
@@ -56,7 +56,14 @@ function ContainerItem({value, onClick}) {
   );
 }
 
-export default function AutoComplete({status, width, items = [], onClick, currentInput = ""}) {
+export default function AutoComplete({
+  status, 
+  width, 
+  items = [], 
+  onClick, 
+  currentInput = ""
+}) {
+
   return (
     <Container
       status={status}
@@ -69,12 +76,11 @@ export default function AutoComplete({status, width, items = [], onClick, curren
           .filter((item) => item.includes(currentInput))
           .filter((_,key) => key < 4)
           .map((item,key) => (
-            <Link key={key}  href={{ pathname: '/repository', query: {name: item}}}>
-              <ContainerItem
-                value={item} 
-                onClick={onClick}
-              />
-            </Link>
+            <ContainerItem
+              key={key}
+              value={item} 
+              onClick={onClick}
+            />
           )
         ) :
         null
