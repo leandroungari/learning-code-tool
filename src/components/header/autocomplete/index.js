@@ -46,7 +46,7 @@ function ContainerItem({value, onClick}) {
   
   
   return (
-    <ContainerDiv onClick={(event) => onClick(event)}> 
+    <ContainerDiv onClick={(event) => onClick(event, value)}> 
       <ContainerText>
         {value}
       </ContainerText>
@@ -62,7 +62,6 @@ export default function AutoComplete({
   currentInput = ""
 }) {
 
-  console.log(onClick);
   return (
     <Container
       status={status}

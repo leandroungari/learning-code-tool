@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import TopBar from './header/TopBar';
-import TextFieldHeader from './header/TextFieldHeader';
+import {
+  TopBar,
+  TextFieldHeader
+} from '../components/header';
 
-import Code from '../assets/images/code-solid.svg'; 
+import { 
+  ReactComponent as Code 
+} from '../assets/images/code-solid.svg'; 
 
 
 function Header(props) {
 
   const [listing, setListing] = useState([]);
+  const dispatch = useDispatch();
 
   const getListing = async () => {
     fetch('http://localhost:8080/metrics/listRepositories')
@@ -18,13 +24,18 @@ function Header(props) {
     });
   }
 
+  function currentRepository(name) {
+    dispatch({
+      type: 'SELECT_REPOSITORY', 
+      repository: name
+    });
+  }
 
   useEffect(() => {
 
-    
     getListing();
-
   }, []);
+
 
   return (
     <>
@@ -37,8 +48,8 @@ function Header(props) {
         <TextFieldHeader
           placeholder="Search here ..."
           list={listing}
-          clickItemList={(event) => {
-            console.log("teste");
+          onClickItem={(_, value) => {
+            currentRepository(value);
           }}
         />
       </TopBar>

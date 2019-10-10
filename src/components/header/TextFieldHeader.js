@@ -30,7 +30,7 @@ export default function TextFieldHeader(props) {
 
   const { 
     placeholder, 
-    clickItemList, 
+    onClickItem, 
     list 
   } = props;
 
@@ -86,7 +86,7 @@ export default function TextFieldHeader(props) {
         status={status}
         width={width}
         items={list}
-        onClick={clickItemList}
+        onClick={onClickItem}
         currentInput={text}
       />
     </div>
