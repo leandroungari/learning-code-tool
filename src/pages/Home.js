@@ -1,7 +1,9 @@
 import React from 'react';
 
-import GlobalStyle from '../components/GlobalStyle';
-import Header from '../components/Header';
+import {
+  Header,
+  GlobalStyle
+} from '../components';
 
 
 document.title = 'Learning Code Tool';

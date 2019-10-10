@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 
 import styled, { css } from 'styled-components';
 import AutoComplete from './autocomplete';
-import { growToRight, decreaseToLeft } from '../animation';
+
+import growToRight from './animation/GrowToRight';
+import decreaseToLeft from './animation/DecreaseToLeft';
 
 
 

@@ -1,7 +1,9 @@
 import React from 'react';
 
 import styled, { css } from 'styled-components';
-import { growToRight, decreaseToLeft } from '../../animation';
+
+import growToRight from '../animation/GrowToRight';
+import decreaseToLeft from '../animation/DecreaseToLeft';
 
 const Container = styled.div`
   position: absolute;

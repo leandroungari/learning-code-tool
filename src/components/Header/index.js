@@ -4,11 +4,11 @@ import { useDispatch } from 'react-redux';
 import {
   TopBar,
   TextFieldHeader
-} from '../components/header';
+} from '../../components';
 
 import { 
   ReactComponent as Code 
-} from '../assets/images/code-solid.svg'; 
+} from './assets/code-solid.svg'; 
 
 
 function Header(props) {
