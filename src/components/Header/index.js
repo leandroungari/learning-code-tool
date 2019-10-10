@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -14,7 +13,6 @@ import {
 
 function Header() {
 
-  const dispatch = useDispatch();
   const history = useHistory();
 
   const [listing, setListing] = useState([]);
@@ -24,13 +22,6 @@ function Header() {
     .then(result => result.json())
     .then(result => {
       setListing(result);
-    });
-  }
-
-  function currentRepository(name) {
-    dispatch({
-      type: 'SELECT_REPOSITORY', 
-      repository: name
     });
   }
 
@@ -52,8 +43,7 @@ function Header() {
           placeholder="Search here ..."
           list={listing}
           onClickItem={(_, value) => {
-            currentRepository(value);
-            history.push('/repository');
+            history.push(`/repository/${value}`);
           }}
         />
       </TopBar>
