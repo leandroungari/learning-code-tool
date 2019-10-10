@@ -88,7 +88,10 @@ export default function TextFieldHeader(props) {
         status={status}
         width={width}
         items={list}
-        onClick={onClickItem}
+        onClick={event => {
+          onClick();
+          onClickItem(event);
+        }}
         currentInput={text}
       />
     </div>
