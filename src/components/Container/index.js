@@ -9,7 +9,8 @@ const Container = styled.div`
   margin-left: ${props => props.marginLeft || 0}px;
   margin-right: ${props => props.marginRight || 0}px;
   margin-bottom: ${props => props.marginBottom || 0}px;
-
+  width: ${props => props.width + 'px' || 'auto'};
+  height: ${props => props.height + 'px' || 'auto'};
 `;  
 
 export default Container;

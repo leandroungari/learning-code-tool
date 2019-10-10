@@ -7,6 +7,7 @@ import {
   GlobalStyle,
   RepositoryData
 } from '../components';
+import HistoryMetrics from '../components/visualization/HistoryMetrics';
 
 
 export default function Repository() {
@@ -67,6 +68,7 @@ export default function Repository() {
           numBranches={branches.length}
           numCommits={totalOfCommitsInAllBranches()}
         />
+        <HistoryMetrics />
       </main>
     </>
   );
