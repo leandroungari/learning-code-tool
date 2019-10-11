@@ -3,31 +3,28 @@ import React, {
   useState 
 } from 'react';
 
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+
+import { useDispatch } from 'react-redux';
 
 import {
   Container,
-  DataArea,
   Header,
   GlobalStyle,
-  RepositoryData
-} from '../components';
+} from '../../components';
 
-import { 
-  HistoryMetrics 
-} from '../components/visualization';
+import RepositoryData from './RepositoryData';
+import HistoryMetrics from './HistoryMetrics';
+import DataArea from './DataArea'
 
+import {
+  server
+} from '../../services';
 
 export default function Repository() {
 
   const { name } = useParams();
-  
   const dispatch = useDispatch();
-  dispatch({
-    type: 'SELECT_REPOSITORY', 
-    repository: name
-  });
 
   const [
     branches, 
@@ -38,6 +35,14 @@ export default function Repository() {
     commits, 
     setCommits
   ] = useState({});
+
+  function selectRepository(name) {
+    console.log('passou')
+    dispatch({
+      type: 'SELECT_REPOSITORY', 
+      repository: name
+    });
+  }
 
   function totalOfCommitsInAllBranches() {
 
@@ -52,15 +57,15 @@ export default function Repository() {
 
     return commits.slice(start, end);
   }
+
+  selectRepository(name);
   
   useEffect(() => {
 
     async function obtainBranches() {
-
       const result = [];
-      const branches = await fetch(`http://localhost:8080/repo/${name}`)
+      const branches = await fetch(`${server.host}/repo/${name}`)
       .then(result => result.json());
-
       for(const branch of branches) {
         if(!result.includes(branch)) {
           result.push(branch);
@@ -77,7 +82,7 @@ export default function Repository() {
     async function obtainCommits() {
       const result = await branches
       .reduce(async (result, branch) => {
-        (await result)[branch] = await fetch(`http://localhost:8080/repo/${name}/${branch}`)
+        (await result)[branch] = await fetch(`${server.host}/repo/${name}/${branch}`)
         .then(result => result.json());
         return result;
       }, {});
@@ -85,13 +90,8 @@ export default function Repository() {
     }
 
     obtainCommits();
-  }, [
-    name, 
-    branches
-  ]);
+  }, [name, branches]);
   
-  
-
   return (
     <>
       <GlobalStyle />

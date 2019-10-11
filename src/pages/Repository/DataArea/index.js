@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import {
   Container
-} from '../../components';
+} from '../../../components';
 
 const Box = styled(Container)`
   border-top: 1px solid #dedede;
