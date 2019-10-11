@@ -7,7 +7,9 @@ import {
   GlobalStyle,
   RepositoryData
 } from '../components';
-import HistoryMetrics from '../components/visualization/HistoryMetrics';
+import { 
+  HistoryMetrics 
+} from '../components/visualization';
 
 
 export default function Repository() {
@@ -32,8 +34,16 @@ export default function Repository() {
   useEffect(() => {
 
     async function obtainBranches() {
-      const result = await fetch(`http://localhost:8080/repo/${name}`)
+
+      const result = [];
+      const branches = await fetch(`http://localhost:8080/repo/${name}`)
       .then(result => result.json());
+
+      for(const branch of branches) {
+        if(!result.includes(branch)) {
+          result.push(branch);
+        }
+      }
       setBranches(result);
     };
 
@@ -55,6 +65,9 @@ export default function Repository() {
     obtainCommits();
   }, [name, branches]);
   
+
+  console.log('10 firsts commits:');
+  console.log(branches);
 
   return (
     <>
