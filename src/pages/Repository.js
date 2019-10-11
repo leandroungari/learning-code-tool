@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { 
+  useEffect, 
+  useState 
+} from 'react';
+
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import {
+  Container,
+  DataArea,
   Header,
   GlobalStyle,
   RepositoryData
 } from '../components';
+
 import { 
   HistoryMetrics 
 } from '../components/visualization';
@@ -22,13 +29,28 @@ export default function Repository() {
     repository: name
   });
 
-  const [branches, setBranches] = useState([]);
-  const [commits, setCommits] = useState({});
+  const [
+    branches, 
+    setBranches
+  ] = useState([]);
+  
+  const [
+    commits, 
+    setCommits
+  ] = useState({});
 
   function totalOfCommitsInAllBranches() {
 
-    return Object.entries(commits)
-    .reduce((total, [_,listOfCommits]) => total + listOfCommits.length, 0);
+    return Object
+    .entries(commits)
+    .reduce((total, [_,listOfCommits]) => {
+      return total + listOfCommits.length;
+    }, 0);
+  }
+
+  function rangeOfCommits(start, end) {
+
+    return commits.slice(start, end);
   }
   
   useEffect(() => {
@@ -63,11 +85,12 @@ export default function Repository() {
     }
 
     obtainCommits();
-  }, [name, branches]);
+  }, [
+    name, 
+    branches
+  ]);
   
-
-  console.log('10 firsts commits:');
-  console.log(branches);
+  
 
   return (
     <>
@@ -75,14 +98,20 @@ export default function Repository() {
       <Header 
         title="Learning Code Tool" 
       />
-      <main>
+      <Container 
+        margin="50px"
+      >
         <RepositoryData 
           name={name} 
           numBranches={branches.length}
           numCommits={totalOfCommitsInAllBranches()}
         />
-        <HistoryMetrics />
-      </main>
+        <DataArea title="Média">
+          <HistoryMetrics />
+        </DataArea>
+      </Container>
+        
+      
     </>
   );
 }

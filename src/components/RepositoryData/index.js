@@ -24,9 +24,6 @@ export default function RepositoryData({
 
   return (
     <Container
-      marginTop={50}
-      marginLeft={50}
-      marginRight={50}
       marginBottom={20}
     >
       <Title>#{name}</Title>
