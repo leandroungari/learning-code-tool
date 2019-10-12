@@ -4,7 +4,7 @@ const TopBar = styled.div`
   display: flex;
   flex-direction: row;
   background-color: #24292e;
-  width: calc(100vw - 32px);
+  width: calc(100% - 32px);
   padding: 16px;
   color: #fff;
 `;

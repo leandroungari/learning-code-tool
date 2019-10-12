@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const Container = styled.div`
+  ${({position}) => position ? `position: ${position};` : ''}
   display: flex;
   justify-content: ${props => props.justifyContent || 'flex-start'};
   align-items: ${props => props.alignItems || 'flex-start'};

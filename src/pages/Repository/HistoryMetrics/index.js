@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Container } from "../../../components";
 import { ResponsiveStream } from '@nivo/stream';
 
@@ -79,12 +78,11 @@ const data = [
   }
 ];
 
-
 export default function HistoryMetrics(props) {
 
   const {
     width = 600,
-    height = 400
+    height = 400,
    } = props;
 
 

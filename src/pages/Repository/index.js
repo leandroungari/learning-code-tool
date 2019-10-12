@@ -2,6 +2,7 @@ import React, {
   useEffect, 
   useState 
 } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { useParams } from 'react-router-dom';
 
@@ -20,11 +21,13 @@ import DataArea from './DataArea'
 import {
   server
 } from '../../services';
+import TextField from '../../components/TextField';
 
 export default function Repository() {
 
   const { name } = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [
     branches, 
@@ -37,7 +40,6 @@ export default function Repository() {
   ] = useState({});
 
   function selectRepository(name) {
-    console.log('passou')
     dispatch({
       type: 'SELECT_REPOSITORY', 
       repository: name
@@ -61,7 +63,7 @@ export default function Repository() {
   selectRepository(name);
   
   useEffect(() => {
-
+    
     async function obtainBranches() {
       const result = [];
       const branches = await fetch(`${server.host}/repo/${name}`)
@@ -96,7 +98,10 @@ export default function Repository() {
     <>
       <GlobalStyle />
       <Header 
-        title="Learning Code Tool" 
+        searchOptions={[]}
+        optionAction={(_, value) => {
+          history.push(`/repository/${value}`);
+        }}
       />
       <Container 
         margin="50px"
@@ -106,12 +111,16 @@ export default function Repository() {
           numBranches={branches.length}
           numCommits={totalOfCommitsInAllBranches()}
         />
-        <DataArea title="Média">
+        <DataArea title="Average of a Metric">
+          <TextField 
+            label="Select a branch" 
+            marginTop={20}
+            width={150}
+            options={branches}
+          />
           <HistoryMetrics />
         </DataArea>
-      </Container>
-        
-      
+      </Container>      
     </>
   );
 }

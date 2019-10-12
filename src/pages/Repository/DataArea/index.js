@@ -9,11 +9,19 @@ const Box = styled(Container)`
   border-top: 1px solid #dedede;
 `;
 
-export default function DataArea({children}) {
+const Title = styled.h2`
+  font-size: 20px;
+`;
+
+export default function DataArea({
+  children, 
+  title
+}) {
   return (
     <Box
-      padding="10px 20px"
+      padding="20px 20px"
     >
+      <Title>{title}</Title>
       {children}
     </Box>
   );
