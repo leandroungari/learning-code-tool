@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 
 import { 
   useDispatch, 
-  useSelector 
+  useSelector
 } from 'react-redux';
 
 import {
@@ -33,6 +33,10 @@ export default function Repository() {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const listOfRepositories = useSelector(
+    ({repositories}) => repositories.listOfRepositories
+  );
+
   const [
     branches, 
     setBranches
@@ -42,13 +46,6 @@ export default function Repository() {
     commits, 
     setCommits
   ] = useState({});
-
-  function selectRepository(name) {
-    dispatch({
-      type: 'SELECT_REPOSITORY', 
-      repository: name
-    });
-  }
 
   function totalOfCommitsInAllBranches() {
 
@@ -63,8 +60,6 @@ export default function Repository() {
 
     return commits.slice(start, end);
   }
-
-  selectRepository(name);
   
   useEffect(() => {
     
@@ -78,14 +73,9 @@ export default function Repository() {
         }
       }
       setBranches(result);
-      dispatch({
-        type: 'SET_BRANCHES',
-        branches: result
-      });
     };
-
     obtainBranches();
-  }, [dispatch, name]);
+  }, [name]);
 
   useEffect(() => {
     
@@ -97,18 +87,21 @@ export default function Repository() {
         return result;
       }, {});
       setCommits(result);
-      dispatch({
-        type: 'SET_COMMITS',
-        commits: result
-      });
     }
-
     obtainCommits();
-  }, [name, branches, dispatch]);
+  }, [name, branches]);
 
-  const listOfRepositories = useSelector(
-    ({repositories}) => repositories.listOfRepositories
-  );
+  useCallback(() => dispatch({
+    type: 'SET_BRANCHES',
+    branches
+  }), [branches]);
+
+  useCallback(() => dispatch({
+    type: 'SET_COMMITS',
+    commits
+  }), [commits]);
+
+  
   
   return (
     <>
