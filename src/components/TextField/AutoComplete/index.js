@@ -34,7 +34,7 @@ function Item({
 
   return (
     <ItemBox 
-      onClick={() => onClick()}
+      onClick={(event) => onClick(event)}
     >
       {children}
     </ItemBox>
@@ -46,7 +46,8 @@ function AutoComplete({
   options = [],
   filter,
   maxResults = 7,
-  optionsEvent
+  optionsEvent,
+  onChange
 }) {
 
   const [results, setResults] = useState([]);
@@ -79,9 +80,9 @@ function AutoComplete({
         .map((item, index) => (
           <Item 
             key={index}
-            onClick={() => {
+            onClick={(event) => {
               optionsEvent(item);
-
+              if(onChange) onChange(item);
             }}
           >
             {item}

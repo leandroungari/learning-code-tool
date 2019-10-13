@@ -71,7 +71,7 @@ export default function TextField({
           value={text}
           focused={isFocused}
           onChange={event => {
-            if(onChange) onChange(event);
+            if(onChange) onChange(event.target.value);
             setText(event.target.value);
           }}
         /> 
@@ -83,6 +83,7 @@ export default function TextField({
               optionsEvent={text => {
                 setText(text);
               }}
+              onChange={onChange}
               filter={text}
               width="auto"
             /> : 

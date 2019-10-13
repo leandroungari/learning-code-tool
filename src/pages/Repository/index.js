@@ -133,6 +133,9 @@ export default function Repository() {
             marginTop={20}
             width={150}
             options={branches}
+            onChange={value => {
+              console.log(value);
+            }}
           />
           <HistoryMetrics />
         </DataArea>
