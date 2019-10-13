@@ -3,6 +3,7 @@ import React, {
   useEffect
 } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import {
   Header,
@@ -16,18 +17,27 @@ import {
 function Home() {
   
   const history = useHistory();
+  const dispatch = useDispatch();
   const [repositories, setRepositories] = useState([]);
 
-  async function listOfRepositories() {
-    fetch(`${server.host}/metrics/listRepositories`)
-    .then(result => result.json())
-    .then(result => setRepositories(result));
-  }
-
   useEffect(() => {
+
+    async function listOfRepositories() {
+      fetch(`${server.host}/metrics/listRepositories`)
+      .then(result => result.json())
+      .then(result => {
+        setRepositories(result);
+        dispatch({
+          type: 'LIST_REPOSITORIES',
+          list: result
+        });
+      });
+    }
+
     document.title = 'Learning Code Tool';
     listOfRepositories();
-  }, []);
+    
+  }, [dispatch]);
 
   return (
     <>

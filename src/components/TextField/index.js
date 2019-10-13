@@ -16,9 +16,10 @@ const Label = styled.p`
 
 const Input = styled.input`
   border: 0;
-  border-bottom: 1px solid #dedede;
+  border-bottom: 1px solid ${({focused}) => focused ? 'green' : '#dedede'};
   font-size: 16px;
   padding: 5px 10px;
+  outline: 0;
   ${({width}) => width ? `${width}px;` : ''}
 `;
 
@@ -37,6 +38,7 @@ export default function TextField({
 }) {
 
   const [text, setText] = useState('');
+  const [isFocused, setFocus] = useState(false);
   
   return (
     <Container  
@@ -53,7 +55,7 @@ export default function TextField({
     >
       <Label>{label}</Label>
       <Container
-        position="absolute"
+        position="relative"
         width={300}
       >
         <Input 
@@ -64,7 +66,10 @@ export default function TextField({
               placeholder
             }
           }
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
           value={text}
+          focused={isFocused}
           onChange={event => {
             if(onChange) onChange(event);
             setText(event.target.value);
@@ -75,7 +80,11 @@ export default function TextField({
             options.length !== 0 ? 
             <AutoComplete 
               options={options}
+              optionsEvent={text => {
+                setText(text);
+              }}
               filter={text}
+              width="auto"
             /> : 
             null
           )

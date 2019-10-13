@@ -1,12 +1,16 @@
 import React, { 
   useEffect, 
-  useState 
+  useState,
+  useCallback
 } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useParams } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
+import { 
+  useDispatch, 
+  useSelector 
+} from 'react-redux';
 
 import {
   Container,
@@ -74,10 +78,14 @@ export default function Repository() {
         }
       }
       setBranches(result);
+      dispatch({
+        type: 'SET_BRANCHES',
+        branches: result
+      });
     };
 
     obtainBranches();
-  }, [name]);
+  }, [dispatch, name]);
 
   useEffect(() => {
     
@@ -89,16 +97,24 @@ export default function Repository() {
         return result;
       }, {});
       setCommits(result);
+      dispatch({
+        type: 'SET_COMMITS',
+        commits: result
+      });
     }
 
     obtainCommits();
-  }, [name, branches]);
+  }, [name, branches, dispatch]);
+
+  const listOfRepositories = useSelector(
+    ({repositories}) => repositories.listOfRepositories
+  );
   
   return (
     <>
       <GlobalStyle />
       <Header 
-        searchOptions={[]}
+        searchOptions={listOfRepositories}
         optionAction={(_, value) => {
           history.push(`/repository/${value}`);
         }}
