@@ -16,11 +16,17 @@ const Label = styled.p`
 
 const Input = styled.input`
   border: 0;
-  border-bottom: 1px solid ${({focused}) => focused ? 'green' : '#dedede'};
+  border-bottom: 1px solid ${({ focused }) => focused ? 'green' : '#dedede'};
   font-size: 16px;
   padding: 5px 10px;
   outline: 0;
-  ${({width}) => width ? `width: ${width}px;` : ''}
+  ${props => props.margin ? `margin: ${props.margin};` : ''}
+  ${props => props.marginTop ? `margin-top: ${props.marginTop}px;` : ''}
+  ${props => props.marginRight ? `margin-right: ${props.marginRight}px;` : ''}
+  ${props => props.marginBottom ? `margin-bottom: ${props.marginBottom}px;` : ''}
+  ${props => props.marginLeft ? `margin-left: ${props.marginLeft}px;` : ''}
+  ${props => props.padding ? `padding: ${props.padding}` : ''};
+  ${({ width }) => width ? `width: ${width}px;` : ''}
 `;
 
 
@@ -35,51 +41,80 @@ export default function TextField({
   marginLeft,
   marginRight,
   margin,
-  width
+  width,
+  min,
+  max,
+  disabled
 }) {
 
   const [text, setText] = useState('');
   const [isFocused, setFocus] = useState(false);
-  
+
+  function handleTextChange(event) {
+    
+    if (onChange) onChange(event.target.value);
+    setText(event.target.value);
+  }
+
   return (
-    <Container  
+    <Container
       {
-        ...
-        {
-          marginTop,
-          marginBottom,
-          marginLeft,
-          marginRight,
-          margin
-        }
+      ...
+      {
+        marginTop,
+        marginBottom,
+        marginLeft,
+        marginRight,
+        margin
+      }
       }
     >
       <Label>{label}</Label>
       <Container
         position="relative"
       >
-        <Input 
-          {
+        <Container
+          flexDirection="row"
+        >
+          <Input
+            {
             ...
             {
               type,
               placeholder,
-              width
+              width,
+              min,
+              max,
+              disabled
             }
+            }
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
+            value={text}
+            focused={isFocused}
+            onChange={handleTextChange}
+          />
+
+          {
+            type === 'range' &&
+            <Input
+              margin="0 10px"
+              value={text}
+              width={40}
+              onChange={handleTextChange}
+              {
+                ...
+                {
+                  disabled
+                }
+              }
+            />
           }
-          onFocus={() => setFocus(true)}
-          onBlur={() => setFocus(false)}
-          value={text}
-          focused={isFocused}
-          onChange={event => {
-            if(onChange) onChange(event.target.value);
-            setText(event.target.value);
-          }}
-        /> 
+        </Container>
         {
           (
-            options.length !== 0 ? 
-            <AutoComplete 
+            options.length !== 0 &&
+            <AutoComplete
               options={options}
               optionsEvent={text => {
                 setText(text);
@@ -87,8 +122,7 @@ export default function TextField({
               onChange={onChange}
               filter={text}
               width="auto"
-            /> : 
-            null
+            />
           )
         }
       </Container>

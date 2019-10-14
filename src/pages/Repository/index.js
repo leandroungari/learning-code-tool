@@ -1,5 +1,5 @@
-import React, { 
-  useEffect, 
+import React, {
+  useEffect,
   useState,
   useCallback
 } from 'react';
@@ -7,8 +7,8 @@ import { useHistory } from 'react-router-dom';
 
 import { useParams } from 'react-router-dom';
 
-import { 
-  useDispatch, 
+import {
+  useDispatch,
   useSelector
 } from 'react-redux';
 
@@ -34,41 +34,37 @@ export default function Repository() {
   const history = useHistory();
 
   const listOfRepositories = useSelector(
-    ({repositories}) => repositories.listOfRepositories
+    ({ repositories }) => repositories.listOfRepositories
   );
 
-  const [
-    branches, 
-    setBranches
-  ] = useState([]);
-  
-  const [
-    commits, 
-    setCommits
-  ] = useState({});
+  const [branches, setBranches] = useState([]);
+  const [commits, setCommits] = useState({});
+  const [currentBranch, setCurrentBranch] = useState('');
+  const [initialCommit, setInitialCommit] = useState(1);
+  const [lastCommit, setLastCommit] = useState(1);
 
   function totalOfCommitsInAllBranches() {
 
     return Object
-    .entries(commits)
-    .reduce((total, [_,listOfCommits]) => {
-      return total + listOfCommits.length;
-    }, 0);
+      .entries(commits)
+      .reduce((total, [_, listOfCommits]) => {
+        return total + listOfCommits.length;
+      }, 0);
   }
 
   function rangeOfCommits(branch, start, end) {
 
-    return commits.slice(start, end);
+    return commits[branch].slice(start, end);
   }
-  
+
   useEffect(() => {
-    
+
     async function obtainBranches() {
       const result = [];
       const branches = await fetch(`${server.host}/repo/${name}`)
-      .then(result => result.json());
-      for(const branch of branches) {
-        if(!result.includes(branch)) {
+        .then(result => result.json());
+      for (const branch of branches) {
+        if (!result.includes(branch)) {
           result.push(branch);
         }
       }
@@ -78,14 +74,14 @@ export default function Repository() {
   }, [name]);
 
   useEffect(() => {
-    
+
     async function obtainCommits() {
       const result = await branches
-      .reduce(async (result, branch) => {
-        (await result)[branch] = await fetch(`${server.host}/repo/${name}/${branch}`)
-        .then(result => result.json());
-        return result;
-      }, {});
+        .reduce(async (result, branch) => {
+          (await result)[branch] = await fetch(`${server.host}/repo/${name}/${branch}`)
+            .then(result => result.json());
+          return result;
+        }, {});
       setCommits(result);
     }
     obtainCommits();
@@ -101,38 +97,70 @@ export default function Repository() {
     commits
   }), [commits]);
 
-  
-  
+  function calculateRange() {
+    return (
+      currentBranch === '' ||
+      commits[currentBranch] === undefined ?
+        {disabled: true} :
+        {min: 0, max: commits[currentBranch].length}
+    );
+  }
+
   return (
     <>
       <GlobalStyle />
-      <Header 
+      <Header
         searchOptions={listOfRepositories}
         optionAction={(_, value) => {
           history.push(`/repository/${value}`);
         }}
       />
-      <Container 
+      <Container
         margin="50px"
       >
-        <RepositoryData 
-          name={name} 
+        <RepositoryData
+          name={name}
           numBranches={branches.length}
           numCommits={totalOfCommitsInAllBranches()}
         />
         <DataArea title="Average of a Metric">
-          <TextField 
-            label="Select a branch" 
+          <TextField
+            label="Select a branch"
             marginTop={20}
-            width={150}
+            width={200}
             options={branches}
             onChange={value => {
-              console.log(value);
+              setCurrentBranch(value);
             }}
           />
+          <Container 
+            flexDirection="row"
+          >
+            <TextField
+              label="Select the initial commit"
+              marginTop={20}
+              marginRight={30}
+              width={100}
+              {...calculateRange()}
+              type="range"
+              onChange={value => {
+                setInitialCommit(Number.parseInt(value));
+              }}
+            />
+            <TextField
+              label="Select the last commit"
+              marginTop={20}
+              width={100}
+              type="range"
+              {...calculateRange()}
+              onChange={value => {
+                setLastCommit(Number.parseInt(value));
+              }}
+            />
+          </Container>
           <HistoryMetrics />
         </DataArea>
-      </Container>      
+      </Container>
     </>
   );
 }
