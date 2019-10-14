@@ -14,6 +14,9 @@ const Container = styled.div`
   ${props => props.marginBottom ? `margin-bottom: ${props.marginBottom}px;` : ''}
   ${props => props.marginLeft ? `margin-left: ${props.marginLeft}px;` : ''}
   ${props => props.padding ? `padding: ${props.padding}` : ''};
+  ${({backgroundColor}) => backgroundColor && `background-color: ${backgroundColor};`}
+  ${({cursor}) => cursor && `cursor: ${cursor};`}
+  ${({opacity}) => opacity && `cursor: ${opacity};`}
 `;  
 
 export default Container;
