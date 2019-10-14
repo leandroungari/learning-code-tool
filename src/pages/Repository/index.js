@@ -56,7 +56,7 @@ export default function Repository() {
     }, 0);
   }
 
-  function rangeOfCommits(start, end) {
+  function rangeOfCommits(branch, start, end) {
 
     return commits.slice(start, end);
   }
