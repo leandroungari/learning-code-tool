@@ -1,7 +1,6 @@
 import React, {
   useEffect,
   useState,
-  useCallback
 } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -16,6 +15,7 @@ import {
   Container,
   Header,
   GlobalStyle,
+  Button
 } from '../../components';
 
 import RepositoryData from './RepositoryData';
@@ -113,6 +113,29 @@ export default function Repository() {
     );
   }
 
+  function storeMetrics(commit, data) {
+    dispatch({
+      type: 'STORE_METRICS',
+      metrics: data,
+      commit
+    });
+  }
+
+  function executePlot() {
+
+    const listOfCommits = rangeOfCommits(currentBranch, initialCommit, lastCommit);
+    //get commits with saved metrics and filter it
+    
+    listOfCommits.forEach(commit => {
+
+      fetch(`${server.host}/repo/${currentBranch}/${commit}`)
+      .then(result => result.json())
+      .then(result => {
+        storeMetrics(commit, result);
+      });
+    });
+  }
+
   
   return (
     <>
@@ -143,6 +166,7 @@ export default function Repository() {
           />
           <Container 
             flexDirection="row"
+            justifyContent="center"
           >
             <TextField
               label="Select the initial commit"
@@ -165,6 +189,14 @@ export default function Repository() {
                 setLastCommit(Number.parseInt(value));
               }}
             />
+            <Button 
+              color="#fff"
+              backgroundColor="green"
+              margin="30px 0 0 20px"
+              onClick={executePlot}
+            >
+              Executar
+            </Button>
           </Container>
           <HistoryMetrics />
         </DataArea>
