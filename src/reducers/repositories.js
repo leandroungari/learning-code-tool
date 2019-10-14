@@ -1,6 +1,5 @@
 const INITIAL_STATE = {
   listOfRepositories: [],
-  current: null,
   branches: [],
   commits: {}
 };
@@ -14,12 +13,6 @@ function repositories(state = INITIAL_STATE, action) {
         state,
         listOfRepositories: action.list
       };
-
-    case 'SELECT_REPOSITORY':
-      return {
-        ...state,
-        current: action.repository
-      }
     
     case 'SET_BRANCHES':
       return {

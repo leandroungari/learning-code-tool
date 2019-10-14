@@ -59,6 +59,13 @@ export default function Repository() {
 
   useEffect(() => {
 
+    function storeBranches(branches) {
+      dispatch({
+        type: 'SET_BRANCHES',
+        branches
+      });
+    }
+
     async function obtainBranches() {
       const result = [];
       const branches = await fetch(`${server.host}/repo/${name}`)
@@ -69,13 +76,22 @@ export default function Repository() {
         }
       }
       setBranches(result);
+      storeBranches(result);
     };
     obtainBranches();
-  }, [name]);
+  }, [dispatch, name]);
 
   useEffect(() => {
 
+    function storeCommits(commits) {
+      dispatch({
+        type: 'SET_COMMITS',
+        commits
+      })
+    }
+
     async function obtainCommits() {
+      
       const result = await branches
         .reduce(async (result, branch) => {
           (await result)[branch] = await fetch(`${server.host}/repo/${name}/${branch}`)
@@ -83,29 +99,21 @@ export default function Repository() {
           return result;
         }, {});
       setCommits(result);
+      storeCommits(result);
     }
     obtainCommits();
-  }, [name, branches]);
-
-  useCallback(() => dispatch({
-    type: 'SET_BRANCHES',
-    branches
-  }), [branches]);
-
-  useCallback(() => dispatch({
-    type: 'SET_COMMITS',
-    commits
-  }), [commits]);
+  }, [name, branches, dispatch]);
 
   function calculateRange() {
     return (
       currentBranch === '' ||
       commits[currentBranch] === undefined ?
         {disabled: true} :
-        {min: 0, max: commits[currentBranch].length}
+        {min: 0, max: commits[currentBranch].length-1}
     );
   }
 
+  
   return (
     <>
       <GlobalStyle />
