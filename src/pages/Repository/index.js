@@ -121,20 +121,34 @@ export default function Repository() {
     });
   }
 
+  function storeHeader(header) {
+    dispatch({
+      type: 'SET_HEADER',
+      header
+    });
+  }
+  const commitsIds = Object.keys(
+    useSelector(({metrics}) => metrics)
+  );
+
   function executePlot() {
 
     const listOfCommits = rangeOfCommits(currentBranch, initialCommit, lastCommit);
-    //get commits with saved metrics and filter it
     
-    listOfCommits.forEach(commit => {
+    listOfCommits
+    .filter(commit => !commitsIds.includes(commit))
+    .forEach(commit => {
 
-      fetch(`${server.host}/repo/${currentBranch}/${commit}`)
+      fetch(`${server.host}/metrics/${name}/${currentBranch}/${commit}`)
       .then(result => result.json())
       .then(result => {
-        storeMetrics(commit, result);
+        const {files, metrics} = result;
+        storeMetrics(commit, files);
+        storeHeader(metrics);
       });
     });
   }
+
 
   
   return (
