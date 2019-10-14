@@ -20,7 +20,7 @@ const Input = styled.input`
   font-size: 16px;
   padding: 5px 10px;
   outline: 0;
-  ${({width}) => width ? `${width}px;` : ''}
+  ${({width}) => width ? `width: ${width}px;` : ''}
 `;
 
 
@@ -34,7 +34,8 @@ export default function TextField({
   marginBottom,
   marginLeft,
   marginRight,
-  margin
+  margin,
+  width
 }) {
 
   const [text, setText] = useState('');
@@ -56,14 +57,14 @@ export default function TextField({
       <Label>{label}</Label>
       <Container
         position="relative"
-        width={300}
       >
         <Input 
           {
             ...
             {
               type,
-              placeholder
+              placeholder,
+              width
             }
           }
           onFocus={() => setFocus(true)}
