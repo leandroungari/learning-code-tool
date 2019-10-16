@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {
   Container
-} from '../../components';
+} from '../../../components';
 
 const Title = styled.h1`
   font-size: 24px;
@@ -24,9 +24,6 @@ export default function RepositoryData({
 
   return (
     <Container
-      marginTop={50}
-      marginLeft={50}
-      marginRight={50}
       marginBottom={20}
     >
       <Title>#{name}</Title>

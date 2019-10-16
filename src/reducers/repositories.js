@@ -1,22 +1,29 @@
 const INITIAL_STATE = {
-  current: null,
-  branches: []
+  listOfRepositories: [],
+  branches: [],
+  commits: {}
 };
 
 function repositories(state = INITIAL_STATE, action) {
 
   switch(action.type) {
 
-    case 'SELECT_REPOSITORY':
+    case 'LIST_REPOSITORIES':
       return {
-        ...state,
-        current: action.repository
-      }
+        state,
+        listOfRepositories: action.list
+      };
     
     case 'SET_BRANCHES':
       return {
         ...state,
         branches: action.branches
+      }
+
+    case 'SET_COMMITS':
+      return {
+        ...state,
+        commits: action.commits
       }
     
     default:

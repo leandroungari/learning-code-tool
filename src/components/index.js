@@ -1,17 +1,16 @@
 import GlobalStyle from './GlobalStyle';
 import Header from './Header';
-import RepositoryData from './RepositoryData';
-import TextFieldHeader from './TextFieldHeader';
+import TextFieldHeader from './Header/TextFieldHeader';
 import TopBar from './TopBar';
 import Container from './Container';
+import Button from './Button';
 
 
 export {
+  Button,
   Container,
   GlobalStyle,
   Header,
-  
-  RepositoryData,
   TextFieldHeader,
   TopBar
 }
