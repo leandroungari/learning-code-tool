@@ -26,6 +26,11 @@ import {
   server
 } from '../../services';
 import TextField from '../../components/TextField';
+import { 
+  storeBranches, 
+  storeCommits 
+} from '../../action/repositories';
+import { storeMetrics, storeHeader } from '../../action/metrics';
 
 export default function Repository() {
 
@@ -59,13 +64,6 @@ export default function Repository() {
 
   useEffect(() => {
 
-    function storeBranches(branches) {
-      dispatch({
-        type: 'SET_BRANCHES',
-        branches
-      });
-    }
-
     async function obtainBranches() {
       const result = [];
       const branches = await fetch(`${server.host}/repo/${name}`)
@@ -76,19 +74,13 @@ export default function Repository() {
         }
       }
       setBranches(result);
-      storeBranches(result);
+      dispatch(storeBranches(result));
     };
     obtainBranches();
   }, [dispatch, name]);
 
   useEffect(() => {
 
-    function storeCommits(commits) {
-      dispatch({
-        type: 'SET_COMMITS',
-        commits
-      })
-    }
 
     async function obtainCommits() {
       
@@ -99,7 +91,7 @@ export default function Repository() {
           return result;
         }, {});
       setCommits(result);
-      storeCommits(result);
+      dispatch(storeCommits(result));
     }
     obtainCommits();
   }, [name, branches, dispatch]);
@@ -113,40 +105,49 @@ export default function Repository() {
     );
   }
 
-  function storeMetrics(commit, data) {
-    dispatch({
-      type: 'STORE_METRICS',
-      metrics: data,
-      commit
-    });
-  }
 
-  function storeHeader(header) {
-    dispatch({
-      type: 'SET_HEADER',
-      header
-    });
-  }
   const commitsIds = Object.keys(
     useSelector(({metrics}) => metrics)
   );
 
+  const metricsOfCommits = useSelector(({metrics}) => metrics);
+  
+  async function extractMetrics(listOfCommits) {
+
+    return new Promise((resolve) => {
+
+      let counter = 0;
+      listOfCommits.forEach(commit => {
+
+        fetch(`${server.host}/metrics/${name}/${currentBranch}/${commit}`)
+        .then(result => result.json())
+        .then(result => {
+          const {files, metrics} = result;
+          dispatch(storeMetrics(commit, files));
+          dispatch(storeHeader(metrics));
+          counter++;
+          if(counter === listOfCommits.length) {
+            resolve();
+          }
+        });
+      });
+    });
+  }
+
   function executePlot() {
 
     const listOfCommits = rangeOfCommits(currentBranch, initialCommit, lastCommit);
-    
-    listOfCommits
+      
+    const filteredListOfCommits = listOfCommits
     .filter(commit => !commitsIds.includes(commit))
-    .forEach(commit => {
-
-      fetch(`${server.host}/metrics/${name}/${currentBranch}/${commit}`)
-      .then(result => result.json())
-      .then(result => {
-        const {files, metrics} = result;
-        storeMetrics(commit, files);
-        storeHeader(metrics);
-      });
+    
+    extractMetrics(filteredListOfCommits)
+    .then(() => {
+      console.log('terminei');
+      console.log(metricsOfCommits)
     });
+
+   
   }
 
 
@@ -168,7 +169,7 @@ export default function Repository() {
           numBranches={branches.length}
           numCommits={totalOfCommitsInAllBranches()}
         />
-        <DataArea title="Average of a Metric">
+        <DataArea title="Average of Metrics">
           <TextField
             label="Select a branch"
             marginTop={20}
