@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   ${({position}) => position ? `position: ${position};` : ''}
-  display: flex;
+  ${({active = true}) => active ? `display: flex;` : `display: none;`}
   justify-content: ${props => props.justifyContent || 'flex-start'};
   align-items: ${props => props.alignItems || 'flex-start'};
   flex-direction: ${props => props.flexDirection || 'column'};
@@ -17,6 +17,7 @@ const Container = styled.div`
   ${({backgroundColor}) => backgroundColor && `background-color: ${backgroundColor};`}
   ${({cursor}) => cursor && `cursor: ${cursor};`}
   ${({opacity}) => opacity && `cursor: ${opacity};`}
+  
 `;  
 
 export default Container;

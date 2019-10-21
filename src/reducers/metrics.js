@@ -9,11 +9,15 @@ function repositories(state = INITIAL_STATE, action) {
 
     case 'STORE_METRICS':
       const { commit, metrics } = action;
+
       return {
         ...state,
         commits: {
           ...state.commits,
-          [commit] : metrics
+          [commit]: {
+            ...state.commits[commit],
+            ...metrics
+          }
         }
       }
 
