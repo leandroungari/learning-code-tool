@@ -7,6 +7,8 @@ export function averageOfMetricsOfFiles(
     {initialCommit,dataOfCommits},
     listOfCommits
   );
+
+  
   
   const processedData = result.map(commit => {
     const set = Object.entries(commit);
@@ -28,10 +30,10 @@ export function metricsOfFiles(
 ) {
 
   let result = extractMetrics(listOfCommits, [], initialCommit, 0);
-  let [, ...remainingOfCommits] = dataOfCommits;
-
+  let [, ...remainingOfCommits] = dataOfCommits.reverse();
+  
   let pos = 1;
-  for(const commit of remainingOfCommits.reverse()) {
+  for(const commit of remainingOfCommits) {
     result = extractMetrics(
       listOfCommits,
       result, 
@@ -66,8 +68,7 @@ function extractMetrics(listOfCommits,result, data, position) {
       }, {})
     )
   ];
-
-  console.log(result);
+  //pq a versão inicial dá erro?
 
   const transformedMetrics = Object
   .entries(data)
