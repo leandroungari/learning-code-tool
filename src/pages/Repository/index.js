@@ -31,6 +31,7 @@ import {
   storeCommits 
 } from '../../action/repositories';
 import { storeMetrics, storeHeader } from '../../action/metrics';
+import { averageOfMetricsOfFiles } from '../../engine/Metrics';
 
 export default function Repository() {
 
@@ -43,10 +44,12 @@ export default function Repository() {
   );
 
   const [branches, setBranches] = useState([]);
-  const [commits, setCommits] = useState({});
-  const [currentBranch, setCurrentBranch] = useState('');
-  const [initialCommit, setInitialCommit] = useState(1);
-  const [lastCommit, setLastCommit] = useState(1);
+  const [commits, setCommits] = useState([]);
+  const [currentBranchId, setCurrentBranchId] = useState('');
+  const [initialCommit, setInitialCommit] = useState(0);
+  const [lastCommit, setLastCommit] = useState(0);
+  const [averageOfMetricsOfFilesActive, activeAverageOfMetricsOfFiles] = useState(0);
+  const [plotData, setPlotData] = useState({});
 
   function totalOfCommitsInAllBranches() {
 
@@ -59,14 +62,17 @@ export default function Repository() {
 
   function rangeOfCommits(branch, start, end) {
 
-    return commits[branch].slice(start, end);
+    const currentBranch = branches.filter(
+      b => b.name === branch
+    )[0];
+    return commits[currentBranch.id.name].slice(start, end+1);
   }
 
   useEffect(() => {
 
     async function obtainBranches() {
       const result = [];
-      const branches = await fetch(`${server.host}/repo/${name}`)
+      const branches = await fetch(`${server.host}/repo/${name}/branches`)
         .then(result => result.json());
       for (const branch of branches) {
         if (!result.includes(branch)) {
@@ -86,72 +92,103 @@ export default function Repository() {
       
       const result = await branches
         .reduce(async (result, branch) => {
-          (await result)[branch] = await fetch(`${server.host}/repo/${name}/${branch}`)
+          (await result)[branch.id.name] = await fetch(`${server.host}/repo/${name}/${branch.id.name}/commits`)
             .then(result => result.json());
           return result;
         }, {});
+
       setCommits(result);
       dispatch(storeCommits(result));
     }
     obtainCommits();
   }, [name, branches, dispatch]);
 
-  function calculateRange() {
-    return (
-      currentBranch === '' ||
-      commits[currentBranch] === undefined ?
-        {disabled: true} :
-        {min: 0, max: commits[currentBranch].length-1}
-    );
+
+  function getCurrentBranch() {
+    return branches.filter(
+      branch => branch.name === currentBranchId
+    )[0];
   }
 
+  function calculateRange() {
 
-  const commitsIds = Object.keys(
-    useSelector(({metrics}) => metrics)
-  );
+    if(currentBranchId === '') return { disabled: true }
 
-  const metricsOfCommits = useSelector(({metrics}) => metrics);
+    const currentBranch = getCurrentBranch();
+
+    if(currentBranch === undefined) return { disabled: true }
+    
+    return {
+      min: 0, 
+      max: commits[currentBranch.id.name].length-1
+    };
+  }
   
   async function extractMetrics(listOfCommits) {
 
     return new Promise((resolve) => {
 
-      let counter = 0;
-      listOfCommits.forEach(commit => {
-
-        fetch(`${server.host}/metrics/${name}/${currentBranch}/${commit}`)
-        .then(result => result.json())
-        .then(result => {
-          const {files, metrics} = result;
-          dispatch(storeMetrics(commit, files));
-          dispatch(storeHeader(metrics));
-          counter++;
-          if(counter === listOfCommits.length) {
-            resolve();
-          }
-        });
+      const currentBranch = getCurrentBranch();
+      const list = listOfCommits.map(async({id}) => {
+      
+        return await metricsOfCommit(
+          'diff',
+          currentBranch.id.name,
+          id.name
+        );
       });
+
+      resolve(Promise.all(list));
     });
+  }
+
+  async function metricsOfCommit(type,branch, commit) {
+    return fetch(
+      `${server.host}/metrics/${type}/${name}/${branch}/${commit}`
+    )
+    .then(result => result.json())
   }
 
   function executePlot() {
 
-    const listOfCommits = rangeOfCommits(currentBranch, initialCommit, lastCommit);
-      
-    const filteredListOfCommits = listOfCommits
-    .filter(commit => !commitsIds.includes(commit))
-    
-    extractMetrics(filteredListOfCommits)
-    .then(() => {
-      console.log('terminei');
-      console.log(metricsOfCommits)
-    });
+    const listOfCommits = rangeOfCommits(currentBranchId, initialCommit, lastCommit);
+    const currentBranch = getCurrentBranch();
 
-   
+    extractMetrics(listOfCommits)
+    .then(result => {
+      
+      //diff metrics
+      dispatch(storeHeader(result[0].metrics)); 
+      result.forEach(({files}, index) => {
+        dispatch(storeMetrics(listOfCommits[index].id.name, files));
+      });
+
+      //entire commit
+      metricsOfCommit(
+        'all', 
+        currentBranch.id.name, listOfCommits[listOfCommits.length-1].id.name
+      )
+      .then(({files}) => {
+        dispatch(storeMetrics(listOfCommits[listOfCommits.length-1].id.name, files));
+        const resultPlot = averageOfMetricsOfFiles( 
+          {
+            initialCommit: files,
+            dataOfCommits: result
+          },
+          listOfCommits
+        );
+
+        setPlotData(resultPlot);
+        activeAverageOfMetricsOfFiles(averageOfMetricsOfFilesActive + 1);
+      });
+
+    });   
   }
 
+  //está dando erro pelo excesso de requisições, então dá erro 
+  //de json por timeout
+  //logo somente fazer requisição dos commits que realmente precisa
 
-  
   return (
     <>
       <GlobalStyle />
@@ -169,14 +206,16 @@ export default function Repository() {
           numBranches={branches.length}
           numCommits={totalOfCommitsInAllBranches()}
         />
-        <DataArea title="Average of Metrics">
+        <DataArea title="Average of Metrics Of Files">
           <TextField
             label="Select a branch"
             marginTop={20}
             width={200}
-            options={branches}
+            options={
+              branches.map(branch => branch.name)
+            }
             onChange={value => {
-              setCurrentBranch(value);
+              setCurrentBranchId(value);
             }}
           />
           <Container 
@@ -213,7 +252,10 @@ export default function Repository() {
               Executar
             </Button>
           </Container>
-          <HistoryMetrics />
+          <HistoryMetrics 
+            active={averageOfMetricsOfFilesActive}
+            data={plotData}
+          />
         </DataArea>
       </Container>
     </>

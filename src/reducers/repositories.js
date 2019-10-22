@@ -1,7 +1,7 @@
 const INITIAL_STATE = {
   listOfRepositories: [],
   branches: [],
-  commits: {}
+  commits: []
 };
 
 function repositories(state = INITIAL_STATE, action) {
