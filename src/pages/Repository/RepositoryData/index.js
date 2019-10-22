@@ -28,7 +28,7 @@ export default function RepositoryData({
     >
       <Title>#{name}</Title>
       <Description>
-        This repository has <strong>{numBranches}</strong> with a total of <strong>{numCommits}</strong> commits.
+        This repository has <strong>{numBranches}</strong> branche(s) with a total of <strong>{numCommits}</strong> commit(s).
       </Description>
     </Container> 
   );
