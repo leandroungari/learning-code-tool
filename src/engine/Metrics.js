@@ -13,11 +13,11 @@ export function averageOfMetricsOfFiles(
   const processedData = result.map(commit => {
     const set = Object.entries(commit);
     return {
-      cbo: set.reduce((total, [_,metrics]) => total + metrics.cbo, 0)/set.length,
-      dit: set.reduce((total, [_,metrics]) => total + metrics.dit, 0)/set.length,
-      nosi: set.reduce((total, [_,metrics]) => total + metrics.nosi, 0)/set.length,
-      rfc: set.reduce((total, [_,metrics]) => total + metrics.rfc, 0)/set.length,
-      wmc: set.reduce((total, [_,metrics]) => total + metrics.wmc, 0)/set.length,
+      cbo: set.reduce((total, [_,metrics]) => total + metrics.cbo, 0)/(set.length || 1),
+      dit: set.reduce((total, [_,metrics]) => total + metrics.dit, 0)/(set.length || 1),
+      nosi: set.reduce((total, [_,metrics]) => total + metrics.nosi, 0)/(set.length || 1),
+      rfc: set.reduce((total, [_,metrics]) => total + metrics.rfc, 0)/(set.length || 1),
+      wmc: set.reduce((total, [_,metrics]) => total + metrics.wmc, 0)/(set.length || 1),
     }
   });
   
