@@ -174,7 +174,8 @@ export default function Repository() {
           {
             initialCommit: files,
             dataOfCommits: result
-          }
+          },
+          listOfCommits
         );
 
         setPlotData(resultPlot);

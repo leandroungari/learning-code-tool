@@ -1,9 +1,13 @@
 export function averageOfMetricsOfFiles(
-  {initialCommit,dataOfCommits}
+  {initialCommit,dataOfCommits},
+  listOfCommits
 ) {
 
-  const result = metricsOfFiles({initialCommit,dataOfCommits});
-  console.log(result)
+  const result = metricsOfFiles(
+    {initialCommit,dataOfCommits},
+    listOfCommits
+  );
+  
   const processedData = result.map(commit => {
     const set = Object.entries(commit);
     return {
@@ -14,20 +18,22 @@ export function averageOfMetricsOfFiles(
       wmc: set.reduce((total, [_,metrics]) => total + metrics.wmc, 0)/set.length,
     }
   });
-  console.log(processedData);
+  
   return processedData;
 }
 
 export function metricsOfFiles(
-  {initialCommit, dataOfCommits}
+  {initialCommit, dataOfCommits},
+  listOfCommits
 ) {
 
-  let result = extractMetrics([], initialCommit, 0);
+  let result = extractMetrics(listOfCommits, [], initialCommit, 0);
   let [, ...remainingOfCommits] = dataOfCommits;
 
   let pos = 1;
   for(const commit of remainingOfCommits.reverse()) {
     result = extractMetrics(
+      listOfCommits,
       result, 
       commit.files, 
       pos++
@@ -37,12 +43,31 @@ export function metricsOfFiles(
   return result;
 }
 
-function extractMetrics(result, data, position) {
+function extractMetrics(listOfCommits,result, data, position) {
+
+  const namesOfDeletedFiles = (listOfCommits[position]
+    .diffFiles || [])
+    .filter(diff => diff.type === 'MODIFY')
+    .map(diff => diff.oldPath);
 
   result = [
     ...result, 
-    (position === 0 ? {} : result[position-1])
+    (
+      position === 0 ? 
+      {} : 
+      Object
+      .entries(result[position-1])
+      .filter(([file]) => !namesOfDeletedFiles.includes(file))
+      .reduce((total, [file, metrics]) => {
+        return {
+          ...total,
+          [file]: metrics
+        }
+      }, {})
+    )
   ];
+
+  console.log(result);
 
   const transformedMetrics = Object
   .entries(data)
