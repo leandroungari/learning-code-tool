@@ -4,6 +4,10 @@ import TextFieldHeader from './Header/TextFieldHeader';
 import TopBar from './TopBar';
 import Container from './Container';
 import Button from './Button';
+import HistoryMetrics from './HistoryMetrics';
+import RepositoryData from './RepositoryData';
+import DataArea from './DataArea';
+import TextField from './TextField';
 
 
 export {
@@ -12,5 +16,9 @@ export {
   GlobalStyle,
   Header,
   TextFieldHeader,
-  TopBar
+  TextField,
+  TopBar,
+  RepositoryData,
+  DataArea,
+  HistoryMetrics
 }
