@@ -105,7 +105,7 @@ export default function Plot() {
 
       const currentBranch = getCurrentBranch();
       const list = listOfCommits.map(async({id}) => {
-      
+        
         return await metricsOfCommit(
           'diff',
           name,
@@ -136,6 +136,8 @@ export default function Plot() {
 
     dispatch(storeListOfCommits(listOfCommits));
     
+    setPlot(null);
+
     extractMetrics(listOfCommits)
     .then(result => {  
       //diff metrics
@@ -155,18 +157,13 @@ export default function Plot() {
           listOfCommits[listOfCommits.length-1].id.name, 
           files
         ));
-        
         setPlot(renderPlot());
       });
-
-    });  
+    });
   }
 
   const getNameOfPlot = useCallback(() => {
-    /*<HistoryMetrics
-    active={averageOfMetricsOfFilesActive}
-    data={plotData}
-  />*/
+
     switch(plotName) {
       case 'average-metrics-files':
         return 'Average of Metrics of Files';

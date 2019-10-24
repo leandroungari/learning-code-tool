@@ -20,7 +20,7 @@ export default function AverageOfMetricsOfFiles() {
   } = useSelector(({ metrics }) => metrics);
 
   const commitsIds = listOfCommits.map(commit => commit.id.name);
-
+  
   const data = averageOfMetricsOfFiles(
     listOfCommits, 
     Object.entries(commits).reduce((total, [id,value]) => {

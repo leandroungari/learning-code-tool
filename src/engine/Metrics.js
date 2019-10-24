@@ -1,10 +1,8 @@
 export function averageOfMetricsOfFiles(listOfCommits, data) {
 
-  console.log(data, "preciso arrumar aqui");
-
   const result = metricsOfFiles(
-    data,
-    listOfCommits
+    listOfCommits,
+    data
   );
 
   const processedData = result.map(commit => {
@@ -23,21 +21,18 @@ export function averageOfMetricsOfFiles(listOfCommits, data) {
 
 export function metricsOfFiles(
   listOfCommits,
-  dataOfCommits
+  data
 ) {
 
-  //let result = extractMetrics(listOfCommits, [], initialCommit, 0);
-  let result = [];
-  //let [, ...remainingOfCommits] = dataOfCommits.reverse();
-  
-  //let pos = 1;
   let pos = 0;
-  //for(const commit of remainingOfCommits) {
-  for(const commit of dataOfCommits) {
+  let result = [];
+
+  for(const commit of listOfCommits.reverse()) {
+    
     result = extractMetrics(
-      listOfCommits,
       result, 
-      commit.files, 
+      commit,
+      data[commit.id.name],
       pos++
     );
   }
@@ -45,19 +40,19 @@ export function metricsOfFiles(
   return result;
 }
 
-function extractMetrics(listOfCommits,result, data, position) {
 
-  const namesOfDeletedFiles = (listOfCommits[position]
-    .diffFiles || [])
-    .filter(diff => diff.type === 'MODIFY')
+function extractMetrics(result, commit, data, position) {
+
+  const namesOfDeletedFiles = (commit.diffFiles || [])
+    .filter(diff => diff.type === 'DELETE')
     .map(diff => diff.oldPath);
 
-  result = [
-    ...result, 
-    (
-      position === 0 ? 
-      {} : 
-      Object
+  if(position === 0) {
+    result = [...result, {}];
+  }
+  else {
+    
+    const metricsOfPreviousVersion = Object
       .entries(result[position-1])
       .filter(([file]) => !namesOfDeletedFiles.includes(file))
       .reduce((total, [file, metrics]) => {
@@ -65,10 +60,12 @@ function extractMetrics(listOfCommits,result, data, position) {
           ...total,
           [file]: metrics
         }
-      }, {})
-    )
-  ];
+      }, {});
 
+    result = [...result, metricsOfPreviousVersion];
+  }
+
+  
   const transformedMetrics = Object
   .entries(data)
   .reduce((total, [file,metrics]) => {
@@ -88,6 +85,6 @@ function extractMetrics(listOfCommits,result, data, position) {
     ...result[position],
     ...transformedMetrics
   }
-
+  
   return result;
 }
