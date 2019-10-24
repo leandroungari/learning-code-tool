@@ -104,7 +104,7 @@ export default function Repository() {
           numCommits={totalOfCommitsInAllBranches()}
         />
         <DataArea 
-          title="Average of Metrics Of Files"
+          title="Average of Metrics of Files"
           onClick={() => {
             history.push(`/plot/${name}`, {
               plotName: 'average-metrics-files'
