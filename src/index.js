@@ -12,7 +12,8 @@ import {
 
 import {
   Home,
-  Repository
+  Repository,
+  Plot
 } from './pages';
 
 ReactDOM.render(
@@ -21,6 +22,7 @@ ReactDOM.render(
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/repository/:name" component={Repository} />
+        <Route path="/plot/:name" component={Plot} />
       </Switch>
     </BrowserRouter>
   </Provider>

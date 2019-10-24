@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
   commits: {},
-  header: []
+  header: [],
+  listOfCommits: []
 };
 
 function repositories(state = INITIAL_STATE, action) {
@@ -26,6 +27,13 @@ function repositories(state = INITIAL_STATE, action) {
       return {
         ...state,
         header
+      }
+
+    case 'SET_LIST_COMMITS':
+      const { listOfCommits } = action;
+      return {
+        ...state,
+        listOfCommits
       }
     
     default:

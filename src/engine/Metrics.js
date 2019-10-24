@@ -1,94 +1,38 @@
-export function averageOfMetricsOfFiles(
-  {initialCommit,dataOfCommits},
-  listOfCommits
-) {
+import {
+  server
+} from '../services';
 
-  const result = metricsOfFiles(
-    {initialCommit,dataOfCommits},
-    listOfCommits
-  );
+/**
+ * It retrieves the metrics from a specified commit
+ * 
+ * @param {String} type All metrics or only from diff files ('all' || 'diff') 
+ * @param {String} repo Name of repository
+ * @param {String} branch Branch id 
+ * @param {String} commit Commit id
+ * 
+ * @returns All metrics from commit
+ */
+export async function metricsOfCommit(type,repo,branch,commit) {
+  return fetch(
+    `${server.host}/metrics/${type}/${repo}/${branch}/${commit}`
+  )
+  .then(result => result.json());
+}
 
-  
-  
-  const processedData = result.map(commit => {
-    const set = Object.entries(commit);
-    return {
-      cbo: set.reduce((total, [_,metrics]) => total + metrics.cbo, 0)/(set.length || 1),
-      dit: set.reduce((total, [_,metrics]) => total + metrics.dit, 0)/(set.length || 1),
-      nosi: set.reduce((total, [_,metrics]) => total + metrics.nosi, 0)/(set.length || 1),
-      rfc: set.reduce((total, [_,metrics]) => total + metrics.rfc, 0)/(set.length || 1),
-      wmc: set.reduce((total, [_,metrics]) => total + metrics.wmc, 0)/(set.length || 1),
-    }
+export async function metricsOfARangeOfCommits(type,repo,branch,listOfCommits) {
+
+  return new Promise((resolve) => {
+
+    const list = listOfCommits.map(async(commitId) => {
+      
+      return await metricsOfCommit(
+        type,
+        repo,
+        branch,
+        commitId  
+      );
+    });
+
+    resolve(Promise.all(list));
   });
-  
-  return processedData;
-}
-
-export function metricsOfFiles(
-  {initialCommit, dataOfCommits},
-  listOfCommits
-) {
-
-  let result = extractMetrics(listOfCommits, [], initialCommit, 0);
-  let [, ...remainingOfCommits] = dataOfCommits.reverse();
-  
-  let pos = 1;
-  for(const commit of remainingOfCommits) {
-    result = extractMetrics(
-      listOfCommits,
-      result, 
-      commit.files, 
-      pos++
-    );
-  }
-
-  return result;
-}
-
-function extractMetrics(listOfCommits,result, data, position) {
-
-  const namesOfDeletedFiles = (listOfCommits[position]
-    .diffFiles || [])
-    .filter(diff => diff.type === 'MODIFY')
-    .map(diff => diff.oldPath);
-
-  result = [
-    ...result, 
-    (
-      position === 0 ? 
-      {} : 
-      Object
-      .entries(result[position-1])
-      .filter(([file]) => !namesOfDeletedFiles.includes(file))
-      .reduce((total, [file, metrics]) => {
-        return {
-          ...total,
-          [file]: metrics
-        }
-      }, {})
-    )
-  ];
-  //pq a versão inicial dá erro?
-
-  const transformedMetrics = Object
-  .entries(data)
-  .reduce((total, [file,metrics]) => {
-    return {
-      ...total,
-      [file]: {
-        cbo: metrics[0],
-        dit: metrics[1],
-        nosi: metrics[4],
-        rfc: metrics[5],
-        wmc: metrics[6]
-      }
-    }
-  }, {});
-
-  result[position] = {
-    ...result[position],
-    ...transformedMetrics
-  }
-
-  return result;
 }

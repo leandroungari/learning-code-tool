@@ -13,3 +13,10 @@ export function storeHeader(header) {
     header
   };
 }
+
+export function storeListOfCommits(listOfCommits) {
+  return {
+    type: 'SET_LIST_COMMITS',
+    listOfCommits
+  };
+}
