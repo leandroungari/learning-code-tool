@@ -99,27 +99,6 @@ export default function Plot() {
       max: commits[currentBranch.id.name].length-1
     };
   }
-  
-  /*async function extractMetrics(listOfCommits) {
-
-    return new Promise((resolve) => {
-
-      const currentBranch = getCurrentBranch();
-      const list = listOfCommits.map(async({id}) => {
-        
-        return await metricsOfCommit(
-          'diff',
-          name,
-          currentBranch.id.name,
-          id.name
-        );
-      });
-
-      resolve(Promise.all(list));
-    });
-  }*/
-
-  
 
   function handleExecuteButton() {
     
