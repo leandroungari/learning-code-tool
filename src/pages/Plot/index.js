@@ -35,7 +35,8 @@ import {
 } from './plot';
 
 import {
-  metricsOfCommit
+  metricsOfCommit,
+  metricsOfARangeOfCommits
 } from '../../engine/Metrics';
 
 export default function Plot() {
@@ -99,7 +100,7 @@ export default function Plot() {
     };
   }
   
-  async function extractMetrics(listOfCommits) {
+  /*async function extractMetrics(listOfCommits) {
 
     return new Promise((resolve) => {
 
@@ -116,7 +117,7 @@ export default function Plot() {
 
       resolve(Promise.all(list));
     });
-  }
+  }*/
 
   
 
@@ -132,8 +133,14 @@ export default function Plot() {
     dispatch(storeListOfCommits(listOfCommits));
     
     setPlot(null);
-
-    extractMetrics(listOfCommits)
+    
+    metricsOfARangeOfCommits(
+      'diff',
+      name,
+      currentBranch.id.name,
+      listOfCommits.map(commit => commit.id.name)
+    )
+    //extractMetrics(listOfCommits)
     .then(result => {  
       //diff metrics
       dispatch(storeHeader(result[0].metrics)); 
