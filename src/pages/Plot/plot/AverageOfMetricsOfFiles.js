@@ -10,7 +10,7 @@ import {
 
 import {
   averageOfMetricsOfFiles
-} from '../../../engine/Metrics';
+} from '../../../engine/Plots';
 
 export default function AverageOfMetricsOfFiles() {
   
