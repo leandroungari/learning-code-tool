@@ -38,7 +38,7 @@ export default function AverageOfMetricsOfFiles() {
     <HistoryMetrics 
       active={true}
       data={data}
-      width={window.innerWidth-100}
+      width={window.innerWidth-130}
     />
   );
 }
