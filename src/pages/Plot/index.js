@@ -24,10 +24,6 @@ import {
   RepositoryData,
 } from '../../components';
 
-import {
-  server
-} from '../../services';
-
 import { 
   storeMetrics, 
   storeHeader, 
@@ -37,6 +33,10 @@ import {
 import {
   AverageOfMetricsOfFiles
 } from './plot';
+
+import {
+  metricsOfCommit
+} from '../../engine/Metrics';
 
 export default function Plot() {
 
@@ -118,12 +118,7 @@ export default function Plot() {
     });
   }
 
-  const metricsOfCommit = useCallback(async(type,repo,branch,commit) => {
-    return fetch(
-      `${server.host}/metrics/${type}/${repo}/${branch}/${commit}`
-    )
-    .then(result => result.json());
-  }, []);
+  
 
   function handleExecuteButton() {
     
