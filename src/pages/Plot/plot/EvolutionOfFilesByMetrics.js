@@ -21,7 +21,10 @@ export default function EvolutionOfFilesByMetrics() {
 
   const commitsIds = listOfCommits.map(commit => commit.id.name);
   
-  const data = evolutionOfFilesByMetrics(
+  const {
+    data,
+    legends
+  } = evolutionOfFilesByMetrics(
     listOfCommits, 
     Object.entries(commits).reduce((total, [id,value]) => {
       if(commitsIds.includes(id)) {
@@ -37,7 +40,9 @@ export default function EvolutionOfFilesByMetrics() {
   return (
     <HistoryMetrics 
       active={true}
+      legendWidth={0}
       data={data}
+      keys={legends}
       width={window.innerWidth-130}
     />
   );

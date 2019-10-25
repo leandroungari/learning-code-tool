@@ -154,6 +154,9 @@ export default function Plot() {
       case 'sum-metrics-files':
         return 'Sum of Metrics of Files';
 
+      case 'evolution-files-metrics': 
+        return 'Evolution of Files by Metrics';
+
       default:
     }
   }, [plotName]);

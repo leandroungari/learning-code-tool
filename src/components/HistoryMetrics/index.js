@@ -7,10 +7,11 @@ export default function HistoryMetrics(props) {
 
   const {
     width = 600,
-    height = 400,
+    height = 500,
     active,
     data, 
-    keys = null
+    keys = null,
+    legendWidth
   } = props;
 
   return (
@@ -33,7 +34,7 @@ export default function HistoryMetrics(props) {
           }}
           axisLeft={{ orient: 'left', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: '', legendOffset: -40 }}
           offsetType="silhouette"
-          colors={{ scheme: 'nivo' }}
+          colors={{ scheme: (keys && keys.length > 6 ? 'red_yellow_blue' : 'nivo') }}
           fillOpacity={0.85}
           borderColor={{ theme: 'background' }}
           defs={[
@@ -77,26 +78,29 @@ export default function HistoryMetrics(props) {
           animate={true}
           motionStiffness={90}
           motionDamping={15}
-          legends={[
-            {
-              anchor: 'bottom-right',
-              direction: 'column',
-              translateX: 100,
-              itemWidth: 80,
-              itemHeight: 20,
-              itemTextColor: '#999999',
-              symbolSize: 12,
-              symbolShape: 'circle',
-              effects: [
-                {
-                  on: 'hover',
-                  style: {
-                    itemTextColor: '#000000'
+          legends={
+            legendWidth === 0 ? [] :
+            [
+              {
+                anchor: 'bottom-right',
+                direction: 'column',
+                translateX: 100,
+                itemWidth: (legendWidth || 80),
+                itemHeight: 20,
+                itemTextColor: '#999999',
+                symbolSize: 12,
+                symbolShape: 'circle',
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemTextColor: '#000000'
+                    }
                   }
-                }
-              ]
-            }
-          ]}
+                ]
+              }
+            ]
+          }
         />
       }
     </Container>
