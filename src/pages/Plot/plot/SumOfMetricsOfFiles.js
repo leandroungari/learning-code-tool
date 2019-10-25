@@ -9,7 +9,7 @@ import {
 } from '../../../components';
 
 import {
-  averageOfMetricsOfFiles
+  sumOfMetricsOfFiles
 } from '../../../engine/Plots';
 
 export default function AverageOfMetricsOfFiles() {
@@ -21,7 +21,7 @@ export default function AverageOfMetricsOfFiles() {
 
   const commitsIds = listOfCommits.map(commit => commit.id.name);
   
-  const data = averageOfMetricsOfFiles(
+  const data = sumOfMetricsOfFiles(
     listOfCommits, 
     Object.entries(commits).reduce((total, [id,value]) => {
       if(commitsIds.includes(id)) {

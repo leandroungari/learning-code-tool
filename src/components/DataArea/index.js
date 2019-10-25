@@ -21,11 +21,18 @@ const Title = styled.h2`
 export default function DataArea({
   children, 
   title,
+  width,
   onClick = undefined
 }) {
   return (
     <Box
       padding="20px 20px"
+      {
+        ...
+        {
+          width
+        }
+      }
     >
       <Title
         onClick={onClick}

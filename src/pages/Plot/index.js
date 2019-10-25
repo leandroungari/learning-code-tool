@@ -31,7 +31,8 @@ import {
 } from '../../action/metrics';
 
 import {
-  AverageOfMetricsOfFiles
+  AverageOfMetricsOfFiles,
+  SumOfMetricsOfFiles
 } from './plot';
 
 import {
@@ -149,6 +150,9 @@ export default function Plot() {
       case 'average-metrics-files':
         return 'Average of Metrics of Files';
 
+      case 'sum-metrics-files':
+        return 'Sum of Metrics of Files';
+
       default:
     }
   }, [plotName]);
@@ -159,6 +163,9 @@ export default function Plot() {
 
       case 'average-metrics-files':   
         return <AverageOfMetricsOfFiles />;
+
+      case 'sum-metrics-files':   
+        return <SumOfMetricsOfFiles />;
 
       default:
     }
