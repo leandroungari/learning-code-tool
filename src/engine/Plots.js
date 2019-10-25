@@ -56,7 +56,7 @@ export function sumOfMetricsOfFiles(listOfCommits, data) {
 
 /////////////////////////////////////////////
 
-export function evolutionOfFilesByMetrics(listOfCommits, data) {
+export function evolutionOfFilesByMetrics(listOfCommits, data, metric) {
 
   const result = metricsOfFiles(
     listOfCommits,
@@ -71,7 +71,7 @@ export function evolutionOfFilesByMetrics(listOfCommits, data) {
       .reduce((total, [file, metrics]) => {
         return {
           ...total,
-          [file]: metrics.cbo
+          [file]: metrics[metric]
         }
       }, {});
   });

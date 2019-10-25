@@ -12,7 +12,7 @@ import {
   evolutionOfFilesByMetrics
 } from '../../../engine/Plots';
 
-export default function EvolutionOfFilesByMetrics() {
+export default function EvolutionOfFilesByMetrics({metric}) {
   
   const {
     listOfCommits,
@@ -34,7 +34,8 @@ export default function EvolutionOfFilesByMetrics() {
         }
       }
       return total;
-    }, {})
+    }, {}),
+    metric
   );
 
   return (
