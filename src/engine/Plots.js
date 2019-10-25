@@ -25,6 +25,8 @@ export function averageOfMetricsOfFiles(listOfCommits, data) {
   return processedData;
 }
 
+/////////////////////////////////////////////
+
 /**
  * It generates the data to sum of metrics plot
  * 
@@ -51,6 +53,8 @@ export function sumOfMetricsOfFiles(listOfCommits, data) {
   
   return processedData;
 }
+
+/////////////////////////////////////////////
 
 export function evolutionOfFilesByMetrics(listOfCommits, data) {
 
@@ -113,6 +117,8 @@ function namesOfFilesOfACommit(commit) {
   
   return Object.entries(commit).map(([file,_]) => file);
 }
+
+/////////////////////////////////////////////
 
 function metricsOfFiles(listOfCommits,data) {
 
