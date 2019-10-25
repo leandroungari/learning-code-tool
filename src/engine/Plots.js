@@ -52,6 +52,27 @@ export function sumOfMetricsOfFiles(listOfCommits, data) {
   return processedData;
 }
 
+export function evolutionOfFilesByMetrics(listOfCommits, data) {
+
+  const result = metricsOfFiles(
+    listOfCommits,
+    data
+  );
+
+  const processedData = result.map(commit => {
+    const set = Object.entries(commit);
+    return {
+      cbo: set.reduce((total, [_,metrics]) => total + metrics.cbo, 0),
+      dit: set.reduce((total, [_,metrics]) => total + metrics.dit, 0),
+      nosi: set.reduce((total, [_,metrics]) => total + metrics.nosi, 0),
+      rfc: set.reduce((total, [_,metrics]) => total + metrics.rfc, 0),
+      wmc: set.reduce((total, [_,metrics]) => total + metrics.wmc, 0),
+    }
+  });
+  
+  return processedData;
+}
+
 function metricsOfFiles(
   listOfCommits,
   data

@@ -32,12 +32,13 @@ import {
 
 import {
   AverageOfMetricsOfFiles,
-  SumOfMetricsOfFiles
+  SumOfMetricsOfFiles,
+  EvolutionOfFilesByMetrics
 } from './plot';
 
 import {
   metricsOfCommit,
-  metricsOfARangeOfCommits
+  metricsOfARangeOfCommits,
 } from '../../engine/Metrics';
 
 export default function Plot() {
@@ -166,6 +167,9 @@ export default function Plot() {
 
       case 'sum-metrics-files':   
         return <SumOfMetricsOfFiles />;
+
+      case 'evolution-files-metrics':   
+        return <EvolutionOfFilesByMetrics />;
 
       default:
     }
