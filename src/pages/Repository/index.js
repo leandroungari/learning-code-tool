@@ -121,6 +121,15 @@ export default function Repository() {
             });
           }}
         ></DataArea>
+        <DataArea 
+          title="Evolution of Files by Metrics"
+          width={400}
+          onClick={() => {
+            history.push(`/plot/${name}`, {
+              plotName: 'evolution-files-metrics'
+            });
+          }}
+        ></DataArea>
       </Container>
     </>
   );

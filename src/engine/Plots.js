@@ -25,6 +25,8 @@ export function averageOfMetricsOfFiles(listOfCommits, data) {
   return processedData;
 }
 
+/////////////////////////////////////////////
+
 /**
  * It generates the data to sum of metrics plot
  * 
@@ -52,10 +54,73 @@ export function sumOfMetricsOfFiles(listOfCommits, data) {
   return processedData;
 }
 
-function metricsOfFiles(
-  listOfCommits,
-  data
-) {
+/////////////////////////////////////////////
+
+export function evolutionOfFilesByMetrics(listOfCommits, data, metric) {
+
+  const result = metricsOfFiles(
+    listOfCommits,
+    data
+  );
+  
+  const allNamesOfFiles = namesOfFilesInARangeOfCommits(result);
+  
+  const processedData = result.map(commit => {
+    return Object
+      .entries(commit)
+      .reduce((total, [file, metrics]) => {
+        return {
+          ...total,
+          [file]: metrics[metric]
+        }
+      }, {});
+  });
+
+  const resultingMetrics = fillNonExistingFilesInAllCommits(
+    allNamesOfFiles, 
+    processedData
+  );
+
+  return {
+    data: resultingMetrics,
+    legends: allNamesOfFiles
+  }
+}
+
+function fillNonExistingFilesInAllCommits(nameOfFiles, commits) {
+
+  return commits.map(commit => fillNonExistingFilesInACommit(nameOfFiles, commit));
+}
+
+function fillNonExistingFilesInACommit(nameOfFiles, commit) {
+  return {
+    ...nameOfFiles.reduce((total,name) => {
+      return {
+        ...total,
+        [name]: 0
+      }
+    }, {}),
+    ...commit
+  }
+}
+
+function namesOfFilesInARangeOfCommits(listOfCommits) {
+  return listOfCommits.reduce((list, commit) => {
+    return [ 
+      ...list,
+      ...namesOfFilesOfACommit(commit).filter(name => !list.includes(name))
+    ];
+  }, []);
+}
+
+function namesOfFilesOfACommit(commit) {
+  
+  return Object.entries(commit).map(([file,_]) => file);
+}
+
+/////////////////////////////////////////////
+
+function metricsOfFiles(listOfCommits,data) {
 
   let pos = 0;
   let result = [];
@@ -86,14 +151,14 @@ function extractMetrics(result, commit, data, position) {
   else {
     
     const metricsOfPreviousVersion = Object
-      .entries(result[position-1])
-      .filter(([file]) => !namesOfDeletedFiles.includes(file))
-      .reduce((total, [file, metrics]) => {
-        return {
-          ...total,
-          [file]: metrics
-        }
-      }, {});
+    .entries(result[position-1])
+    .filter(([file]) => !namesOfDeletedFiles.includes(file))
+    .reduce((total, [file, metrics]) => {
+      return {
+        ...total,
+        [file]: metrics
+      }
+    }, {});
 
     result = [...result, metricsOfPreviousVersion];
   }

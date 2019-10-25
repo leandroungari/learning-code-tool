@@ -26,18 +26,18 @@ import {
 
 import { 
   storeMetrics, 
-  storeHeader, 
   storeListOfCommits 
 } from '../../action/metrics';
 
 import {
   AverageOfMetricsOfFiles,
-  SumOfMetricsOfFiles
+  SumOfMetricsOfFiles,
+  EvolutionOfFilesByMetrics
 } from './plot';
 
 import {
   metricsOfCommit,
-  metricsOfARangeOfCommits
+  metricsOfARangeOfCommits,
 } from '../../engine/Metrics';
 
 export default function Plot() {
@@ -51,6 +51,7 @@ export default function Plot() {
   const [initialCommit, setInitialCommit] = useState(0);
   const [lastCommit, setLastCommit] = useState(0);
   const [ plot, setPlot ] = useState(null);
+  const [currentMetric, setCurrentMetric] = useState(null);
 
   const listOfRepositories = useSelector(
     ({ repositories }) => repositories.listOfRepositories
@@ -123,7 +124,7 @@ export default function Plot() {
     //extractMetrics(listOfCommits)
     .then(result => {  
       //diff metrics
-      dispatch(storeHeader(result[0].metrics)); 
+      //dispatch(storeHeader(result[0].metrics)); 
       result.forEach(({files}, index) => {
         dispatch(storeMetrics(listOfCommits[index].id.name, files));
       });
@@ -153,6 +154,9 @@ export default function Plot() {
       case 'sum-metrics-files':
         return 'Sum of Metrics of Files';
 
+      case 'evolution-files-metrics': 
+        return 'Evolution of Files by Metrics';
+
       default:
     }
   }, [plotName]);
@@ -167,10 +171,13 @@ export default function Plot() {
       case 'sum-metrics-files':   
         return <SumOfMetricsOfFiles />;
 
+      case 'evolution-files-metrics':   
+        return <EvolutionOfFilesByMetrics metric={currentMetric}/>;
+
       default:
     }
 
-  }, [plotName]);
+  }, [plotName, currentMetric]);
 
   return (
     <>
@@ -211,7 +218,7 @@ export default function Plot() {
             <TextField
               label="Select the initial commit"
               marginTop={20}
-              marginRight={30}
+              marginRight={20}
               width={100}
               {...calculateRange()}
               type="range"
@@ -229,6 +236,20 @@ export default function Plot() {
                 setLastCommit(Number.parseInt(value));
               }}
             />
+            {
+              plotName === 'evolution-files-metrics' &&
+              <TextField
+                label="Select a metric"
+                marginLeft={20}
+                marginTop={20}
+                disabled={getCurrentBranch() === undefined}
+                width={100}
+                options={['CBO','DIT','NOSI','RFC','WMC']}
+                onChange={value => {
+                  setCurrentMetric(value.toLowerCase());
+                }}
+              />
+            }
             <Button
               color="#fff"
               backgroundColor="green"
