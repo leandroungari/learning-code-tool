@@ -124,7 +124,7 @@ export default function Plot() {
     //extractMetrics(listOfCommits)
     .then(result => {  
       //diff metrics
-      dispatch(storeHeader(result[0].metrics)); 
+      //dispatch(storeHeader(result[0].metrics)); 
       result.forEach(({files}, index) => {
         dispatch(storeMetrics(listOfCommits[index].id.name, files));
       });
