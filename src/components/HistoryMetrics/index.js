@@ -28,7 +28,8 @@ export default function HistoryMetrics(props) {
             tickPadding: 5,
             tickRotation: 0,
             legend: '',
-            legendOffset: 36
+            legendOffset: 36,
+            tickValues: (data.length > 60 ? [] : undefined)
           }}
           axisLeft={{ orient: 'left', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: '', legendOffset: -40 }}
           offsetType="silhouette"
