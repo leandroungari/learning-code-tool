@@ -105,9 +105,19 @@ export default function Repository() {
         />
         <DataArea 
           title="Average of Metrics of Files"
+          width={400}
           onClick={() => {
             history.push(`/plot/${name}`, {
               plotName: 'average-metrics-files'
+            });
+          }}
+        ></DataArea>
+        <DataArea 
+          title="Sum of Metrics of Files"
+          width={400}
+          onClick={() => {
+            history.push(`/plot/${name}`, {
+              plotName: 'sum-metrics-files'
             });
           }}
         ></DataArea>
