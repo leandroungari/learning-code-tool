@@ -39,6 +39,10 @@ export default function AverageOfMetricsOfFiles() {
       active={true}
       data={data}
       width={window.innerWidth-130}
+      legend={{
+        rotate: -45,
+        labels: commitsIds.map(id => id.substring(0,6)).reverse()
+      }}
     />
   );
 }

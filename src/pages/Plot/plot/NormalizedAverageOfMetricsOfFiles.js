@@ -38,6 +38,10 @@ export default function NormalizedAverageOfMetricsOfFiles() {
     <HistoryMetrics 
       active={true}
       data={data}
+      legend={{
+        rotate: -45,
+        labels: commitsIds.map(id => id.substring(0,6)).reverse()
+      }}
       width={window.innerWidth-130}
     />
   );

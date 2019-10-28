@@ -44,6 +44,10 @@ export default function EvolutionOfFilesByMetrics({metric}) {
       legendWidth={0}
       data={data}
       keys={legends}
+      legend={{
+        rotate: -45,
+        labels: commitsIds.map(id => id.substring(0,6)).reverse()
+      }}
       width={window.innerWidth-130}
     />
   );
