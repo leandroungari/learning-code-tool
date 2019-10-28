@@ -54,6 +54,7 @@ export default function Plot() {
   const [lastCommit, setLastCommit] = useState(0);
   const [ plot, setPlot ] = useState(null);
   const [currentMetric, setCurrentMetric] = useState(null);
+  const [ step, setStep] = useState(1);
 
   const listOfRepositories = useSelector(
     ({ repositories }) => repositories.listOfRepositories
@@ -76,13 +77,19 @@ export default function Plot() {
       ), 0);
   }, [commits]);
 
-  function rangeOfCommits(branch, start, end) {
+  function rangeOfCommits(branch, start, end, step = 1) {
 
     const currentBranch = branches
       .filter(b => b.name === branch)[0];
 
-    return commits[currentBranch.id.name]
-      .slice(start, end+1);
+    let result = commits[currentBranch.id.name]
+    .slice(start, end+1);
+
+    if(step !== -1) {
+      result = result.filter((_,index) => index % step === 0);
+    }
+
+    return result;
   }
 
   function getCurrentBranch() {
@@ -110,7 +117,8 @@ export default function Plot() {
     const listOfCommits = rangeOfCommits(
       currentBranchId, 
       initialCommit, 
-      lastCommit
+      lastCommit,
+      step
     );
 
     dispatch(storeListOfCommits(listOfCommits));
@@ -248,6 +256,24 @@ export default function Plot() {
               {...calculateRange()}
               onChange={value => {
                 setLastCommit(Number.parseInt(value));
+              }}
+            />
+          </Container>
+          <Container 
+            flexDirection="row"
+            justifyContent="center"
+          >
+            <TextField
+              label="Define the step"
+              marginTop={20}
+              width={100}
+              type="range"
+              disabled={getCurrentBranch() === undefined}
+              value={step}
+              min={1}
+              max={Math.round((lastCommit-initialCommit)/10)}
+              onChange={value => {
+                setStep(Number.parseInt(value));
               }}
             />
             {
