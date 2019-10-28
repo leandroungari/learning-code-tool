@@ -33,7 +33,8 @@ import {
   AverageOfMetricsOfFiles,
   SumOfMetricsOfFiles,
   EvolutionOfFilesByMetrics,
-  NormalizedAverageOfMetricsOfFiles
+  NormalizedAverageOfMetricsOfFiles,
+  NormalizedSumOfMetricsOfFiles
 } from './plot';
 
 import {
@@ -152,8 +153,14 @@ export default function Plot() {
       case 'average-metrics-files':
         return 'Average of Metrics of Files';
 
+      case 'normalized-average-metrics-files':   
+        return 'Average of Metrics of Files (Normalized)';
+
       case 'sum-metrics-files':
         return 'Sum of Metrics of Files';
+
+      case 'normalized-sum-metrics-files':
+        return 'Sum of Metrics of Files (Normalized)';
 
       case 'evolution-files-metrics': 
         return 'Evolution of Files by Metrics';
@@ -174,6 +181,9 @@ export default function Plot() {
       
       case 'sum-metrics-files':   
         return <SumOfMetricsOfFiles />;
+
+      case 'normalized-sum-metrics-files':
+        return <NormalizedSumOfMetricsOfFiles />;
 
       case 'evolution-files-metrics':   
         return <EvolutionOfFilesByMetrics metric={currentMetric}/>;

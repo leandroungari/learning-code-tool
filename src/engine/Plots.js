@@ -33,7 +33,6 @@ export function normalizedAverageOfMetricsOfFiles(listOfCommits, data) {
 
   const result = averageOfMetricsOfFiles(listOfCommits, data);
   const listOfValues = extractListOfValues(result);
-
   const normalizedList = normalizeValues(listOfValues);
   return generateResultMetrics(normalizedList);
 }
@@ -93,6 +92,16 @@ export function sumOfMetricsOfFiles(listOfCommits, data) {
   });
   
   return processedData;
+}
+
+/////////////////////////////////////////////
+
+export function normalizedSumOfMetricsOfFiles(listOfCommits, data) {
+
+  const result = sumOfMetricsOfFiles(listOfCommits, data);
+  const listOfValues = extractListOfValues(result);
+  const normalizedList = normalizeValues(listOfValues);
+  return generateResultMetrics(normalizedList);
 }
 
 /////////////////////////////////////////////

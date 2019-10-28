@@ -131,6 +131,15 @@ export default function Repository() {
           }}
         ></DataArea>
         <DataArea 
+          title="Sum of Metrics of Files (Normalized)"
+          width={400}
+          onClick={() => {
+            history.push(`/plot/${name}`, {
+              plotName: 'normalized-sum-metrics-files'
+            });
+          }}
+        ></DataArea>
+        <DataArea 
           title="Evolution of Files by Metrics"
           width={400}
           onClick={() => {
