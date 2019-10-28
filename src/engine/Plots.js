@@ -1,3 +1,5 @@
+import { normalized } from "./Stats";
+
 /**
  * It generates the data to average of metrics plot
  * 
@@ -23,6 +25,45 @@ export function averageOfMetricsOfFiles(listOfCommits, data) {
   });
   
   return processedData;
+}
+
+/////////////////////////////////////////////
+
+export function normalizedAverageOfMetricsOfFiles(listOfCommits, data) {
+
+  const result = averageOfMetricsOfFiles(listOfCommits, data);
+  const listOfValues = extractListOfValues(result);
+
+  const normalizedList = normalizeValues(listOfValues);
+  return generateResultMetrics(normalizedList);
+}
+
+function extractListOfValues(result) {
+  return [
+    result.map(commit => commit.cbo),
+    result.map(commit => commit.dit),
+    result.map(commit => commit.nosi),
+    result.map(commit => commit.rfc),
+    result.map(commit => commit.wmc)
+  ]
+}
+
+function normalizeValues(list) {
+  return list.map(values => normalized(values));
+}
+
+function generateResultMetrics(list) {
+  const result = [];
+  for(let i = 0; i < list[0].length; i++) {
+    result.push({
+      cbo: list[0][i],
+      dit: list[1][i],
+      nosi: list[2][i],
+      rfc: list[3][i],
+      wmc: list[4][i],
+    });
+  }
+  return result;
 }
 
 /////////////////////////////////////////////

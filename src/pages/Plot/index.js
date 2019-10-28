@@ -32,7 +32,8 @@ import {
 import {
   AverageOfMetricsOfFiles,
   SumOfMetricsOfFiles,
-  EvolutionOfFilesByMetrics
+  EvolutionOfFilesByMetrics,
+  NormalizedAverageOfMetricsOfFiles
 } from './plot';
 
 import {
@@ -168,6 +169,9 @@ export default function Plot() {
       case 'average-metrics-files':   
         return <AverageOfMetricsOfFiles />;
 
+      case 'normalized-average-metrics-files':   
+        return <NormalizedAverageOfMetricsOfFiles />;
+      
       case 'sum-metrics-files':   
         return <SumOfMetricsOfFiles />;
 
