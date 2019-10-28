@@ -12,7 +12,7 @@ import {
   normalizedSumOfMetricsOfFiles
 } from '../../../engine/Plots';
 
-export default function NormalizedSumOfMetricsOfFiles() {
+export default function NormalizedSumOfMetricsOfFiles({positions}) {
   
   const {
     listOfCommits,
@@ -43,6 +43,7 @@ export default function NormalizedSumOfMetricsOfFiles() {
         labels: commitsIds.map(id => id.substring(0,6)).reverse()
       }}
       width={window.innerWidth-130}
+      positions={positions.reverse()} 
     />
   );
 }

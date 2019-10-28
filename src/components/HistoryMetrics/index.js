@@ -12,11 +12,13 @@ export default function HistoryMetrics(props) {
     data, 
     keys = null,
     legend,
-    legendWidth
+    legendWidth,
+    positions = []
   } = props;
 
   const factor = (width-170)/(data.length-1);
   let item = 0;
+  let itemPosition = 0;
 
   const {
     rotate,
@@ -51,6 +53,33 @@ export default function HistoryMetrics(props) {
                     dominantBaseline='text-before-edge'
                     textAnchor='middle'
                     transform={`translate(${-15},${25}) rotate(${rotate})`}
+                    style={{fill: 'rgb(106,124,137)', fontSize: 11, fontFamily: 'sans-serif'}}
+                  >
+                    {value}
+                  </text>
+                </g>
+              )
+            }
+          }}
+          axisTop={{
+            orient: 'top',
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+            legend: '',
+            legendOffset: 36,
+            tickValues: positions,
+            renderTick: ({value}) => {
+              return (
+                <g
+                  key={item}
+                  transform={`translate(${factor*(itemPosition++)},${0})`}
+                >
+                  <line x1={0} x2={0} y1={0} y2={-5} style={{stroke: 'rgb(136, 158, 174)', strokeWidth: 1}} />
+                  <text
+                    dominantBaseline='text-before-edge'
+                    textAnchor='middle'
+                    transform={`translate(${0},${-25}) rotate(${-45})`}
                     style={{fill: 'rgb(106,124,137)', fontSize: 11, fontFamily: 'sans-serif'}}
                   >
                     {value}
