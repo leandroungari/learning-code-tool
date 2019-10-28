@@ -14,6 +14,9 @@ export default function HistoryMetrics(props) {
     legendWidth
   } = props;
 
+  const factor = (width-170)/(data.length-1);
+  let item = 0;
+
   return (
     <Container {...{ width, height, active }}>
       {
@@ -30,7 +33,24 @@ export default function HistoryMetrics(props) {
             tickRotation: 0,
             legend: '',
             legendOffset: 36,
-            tickValues: (data.length > 60 ? [] : undefined)
+            //tickValues: (data.length > 60 ? [] : undefined),
+            renderTick: ({value}) => {
+              return (
+                <g
+                    transform={`translate(${factor*(item++)},${0})`}
+                >
+                    <line x1={0} x2={0} y1={0} y2={5} style={{stroke: 'rgb(136, 158, 174)', strokeWidth: 1}} />
+                    <text
+                        dominantBaseline='text-before-edge'
+                        textAnchor='middle'
+                        transform={`translate(${0},${10}) rotate(${0})`}
+                        style={{fill: 'rgb(106,124,137)', fontSize: 11, fontFamily: 'sans-serif'}}
+                    >
+                        {value}
+                    </text>
+                </g>
+              )
+            }
           }}
           axisLeft={{ orient: 'left', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: '', legendOffset: -40 }}
           offsetType="silhouette"
