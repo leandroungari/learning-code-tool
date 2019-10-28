@@ -55,6 +55,11 @@ export default function Plot() {
   const [ plot, setPlot ] = useState(null);
   const [currentMetric, setCurrentMetric] = useState(null);
   const [ step, setStep] = useState(1);
+  
+  const positions = [];
+  for(let i = initialCommit; i <= lastCommit; i+=step) {
+    positions.push(i);
+  }
 
   const listOfRepositories = useSelector(
     ({ repositories }) => repositories.listOfRepositories
@@ -126,7 +131,7 @@ export default function Plot() {
     setPlot(null);
     
     metricsOfARangeOfCommits(
-      'diff',
+      (step === 1 ? 'diff' : 'all'),
       name,
       currentBranch.id.name,
       listOfCommits.map(commit => commit.id.name)
@@ -182,24 +187,24 @@ export default function Plot() {
     switch(plotName) {
 
       case 'average-metrics-files':   
-        return <AverageOfMetricsOfFiles />;
+        return <AverageOfMetricsOfFiles positions={positions} />;
 
       case 'normalized-average-metrics-files':   
-        return <NormalizedAverageOfMetricsOfFiles />;
+        return <NormalizedAverageOfMetricsOfFiles positions={positions} />;
       
       case 'sum-metrics-files':   
-        return <SumOfMetricsOfFiles />;
+        return <SumOfMetricsOfFiles positions={positions} />;
 
       case 'normalized-sum-metrics-files':
-        return <NormalizedSumOfMetricsOfFiles />;
+        return <NormalizedSumOfMetricsOfFiles positions={positions} />;
 
       case 'evolution-files-metrics':   
-        return <EvolutionOfFilesByMetrics metric={currentMetric}/>;
+        return <EvolutionOfFilesByMetrics metric={currentMetric} positions={positions} />;
 
       default:
     }
 
-  }, [plotName, currentMetric]);
+  }, [plotName, currentMetric, positions]);
 
   return (
     <>

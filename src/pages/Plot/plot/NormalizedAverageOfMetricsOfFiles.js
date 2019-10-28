@@ -12,7 +12,7 @@ import {
   normalizedAverageOfMetricsOfFiles
 } from '../../../engine/Plots';
 
-export default function NormalizedAverageOfMetricsOfFiles() {
+export default function NormalizedAverageOfMetricsOfFiles({positions}) {
   
   const {
     listOfCommits,
@@ -43,6 +43,7 @@ export default function NormalizedAverageOfMetricsOfFiles() {
         labels: commitsIds.map(id => id.substring(0,6)).reverse()
       }}
       width={window.innerWidth-130}
+      positions={positions.reverse()} 
     />
   );
 }

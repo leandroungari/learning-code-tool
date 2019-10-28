@@ -12,7 +12,7 @@ import {
   averageOfMetricsOfFiles
 } from '../../../engine/Plots';
 
-export default function AverageOfMetricsOfFiles() {
+export default function AverageOfMetricsOfFiles({positions}) {
   
   const {
     listOfCommits,
@@ -43,6 +43,7 @@ export default function AverageOfMetricsOfFiles() {
         rotate: -45,
         labels: commitsIds.map(id => id.substring(0,6)).reverse()
       }}
+      positions={positions.reverse()} 
     />
   );
 }

@@ -12,7 +12,7 @@ import {
   evolutionOfFilesByMetrics
 } from '../../../engine/Plots';
 
-export default function EvolutionOfFilesByMetrics({metric}) {
+export default function EvolutionOfFilesByMetrics({metric,positions}) {
   
   const {
     listOfCommits,
@@ -49,6 +49,7 @@ export default function EvolutionOfFilesByMetrics({metric}) {
         labels: commitsIds.map(id => id.substring(0,6)).reverse()
       }}
       width={window.innerWidth-130}
+      positions={positions.reverse()} 
     />
   );
 }
