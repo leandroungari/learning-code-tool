@@ -39,18 +39,9 @@ export default function Repository() {
   );
 
   const [branches, setBranches] = useState([]);
-  const [commits, setCommits] = useState([]);
+  const [commits, setCommits] = useState({});
+  const [totalOfCommits, setTotalOfCommits] = useState(0);
   
-  function totalOfCommitsInAllBranches() {
-
-    return Object
-      .entries(commits)
-      .reduce((total, [_, listOfCommits]) => {
-        return total + listOfCommits.length;
-      }, 0);
-  }
-
-
   useEffect(() => {
 
     async function obtainBranches() {
@@ -65,11 +56,12 @@ export default function Repository() {
       setBranches(result);
       dispatch(storeBranches(result));
     };
+    
     obtainBranches();
+
   }, [dispatch, name]);
 
   useEffect(() => {
-
 
     async function obtainCommits() {
       
@@ -79,12 +71,34 @@ export default function Repository() {
             .then(result => result.json());
           return result;
         }, {});
-
-      setCommits(result);
-      dispatch(storeCommits(result));
+      
+      const data = Object
+      .entries(result)
+      .reduce((total,[branch,commits]) => {
+        return {
+          ...total,
+          [branch]: commits.map(commit => commit.id.name)
+        }
+      }, {});
+      dispatch(storeCommits(data));
+      setCommits(data);
     }
     obtainCommits();
   }, [name, branches, dispatch]);
+
+  useEffect(() => {
+
+    function totalOfCommitsInAllBranches() {
+      return Object
+        .entries(commits)
+        .reduce((total, [_, listOfCommits]) => {
+          return total + listOfCommits.length;
+        }, 0);
+    }
+
+    const value = totalOfCommitsInAllBranches();
+    setTotalOfCommits(value);
+  }, [commits]);
 
   return (
     <>
@@ -101,7 +115,7 @@ export default function Repository() {
         <RepositoryData
           name={name}
           numBranches={branches.length}
-          numCommits={totalOfCommitsInAllBranches()}
+          numCommits={totalOfCommits}
         />
         <DataArea 
           title="Average of Metrics of Files"

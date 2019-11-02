@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useCallback
+} from 'react';
 
 import {
   useSelector
@@ -12,7 +14,7 @@ import {
   sumOfMetricsOfFiles
 } from '../../../engine/Plots';
 
-export default function AverageOfMetricsOfFiles({positions}) {
+export default function SumOfMetricsOfFiles({branch,min,max,step}) {
   
   const {
     listOfCommits,
@@ -34,6 +36,14 @@ export default function AverageOfMetricsOfFiles({positions}) {
     }, {})
   );
 
+  const generatePositions = useCallback((min,max,step) => {
+    const result = [];
+    for(let i = min; i < max; i+=step) {
+      result.push(i);
+    }
+    return result;
+  },[]);
+
   return (
     <HistoryMetrics 
       active={true}
@@ -43,7 +53,7 @@ export default function AverageOfMetricsOfFiles({positions}) {
         labels: commitsIds.map(id => id.substring(0,6)).reverse()
       }}
       width={window.innerWidth-130}
-      positions={positions.reverse()} 
+      positions={generatePositions().reverse()} 
     />
   );
 }

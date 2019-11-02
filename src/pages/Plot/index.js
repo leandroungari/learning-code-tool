@@ -56,10 +56,10 @@ export default function Plot() {
   const [currentMetric, setCurrentMetric] = useState(null);
   const [ step, setStep] = useState(1);
   
-  const positions = [];
+  /*const positions = [];
   for(let i = initialCommit; i <= lastCommit; i+=step) {
     positions.push(i);
-  }
+  }*/
 
   const listOfRepositories = useSelector(
     ({ repositories }) => repositories.listOfRepositories
@@ -118,7 +118,7 @@ export default function Plot() {
 
   function handleExecuteButton() {
     
-    const currentBranch = getCurrentBranch();
+    /*const currentBranch = getCurrentBranch();
     const listOfCommits = rangeOfCommits(
       currentBranchId, 
       initialCommit, 
@@ -157,7 +157,16 @@ export default function Plot() {
         ));
         setPlot(renderPlot());
       });
-    });
+    });*/ 
+
+    setPlot(renderPlot({
+      plotName, 
+      currentBranchId,
+      initialCommit, 
+      lastCommit, 
+      step, 
+      currentMetric
+    }));
   }
 
   const getNameOfPlot = useCallback(() => {
@@ -182,29 +191,58 @@ export default function Plot() {
     }
   }, [plotName]);
 
-  const renderPlot = useCallback(() => {
+  const renderPlot = useCallback(({
+    plotName, 
+    currentBranchId,
+    initialCommit, 
+    lastCommit, 
+    step, 
+    currentMetric
+  }) => {
 
     switch(plotName) {
 
       case 'average-metrics-files':   
-        return <AverageOfMetricsOfFiles positions={positions} />;
+        return <AverageOfMetricsOfFiles 
+          min={initialCommit} 
+          max={lastCommit}
+          branch={currentBranchId}
+          step={step}
+        />;
 
       case 'normalized-average-metrics-files':   
-        return <NormalizedAverageOfMetricsOfFiles positions={positions} />;
+        return <NormalizedAverageOfMetricsOfFiles  
+          min={initialCommit} 
+          max={lastCommit}
+          step={step}
+        />;
       
       case 'sum-metrics-files':   
-        return <SumOfMetricsOfFiles positions={positions} />;
+        return <SumOfMetricsOfFiles
+          min={initialCommit} 
+          max={lastCommit}
+          step={step}
+        />;
 
       case 'normalized-sum-metrics-files':
-        return <NormalizedSumOfMetricsOfFiles positions={positions} />;
+        return <NormalizedSumOfMetricsOfFiles
+          min={initialCommit} 
+          max={lastCommit}
+          step={step}
+        />;
 
       case 'evolution-files-metrics':   
-        return <EvolutionOfFilesByMetrics metric={currentMetric} positions={positions} />;
+        return <EvolutionOfFilesByMetrics
+          min={initialCommit} 
+          max={lastCommit}
+          step={step}
+          metric={currentMetric}
+        />;
 
       default:
     }
 
-  }, [plotName, currentMetric, positions]);
+  }, []);
 
   return (
     <>
