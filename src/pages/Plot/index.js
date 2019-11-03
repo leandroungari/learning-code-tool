@@ -206,6 +206,7 @@ export default function Plot() {
         return <AverageOfMetricsOfFiles 
           min={initialCommit} 
           max={lastCommit}
+          repo={name}
           branch={currentBranchId}
           step={step}
         />;
@@ -214,6 +215,8 @@ export default function Plot() {
         return <NormalizedAverageOfMetricsOfFiles  
           min={initialCommit} 
           max={lastCommit}
+          repo={name}
+          branch={currentBranchId}
           step={step}
         />;
       
@@ -221,6 +224,8 @@ export default function Plot() {
         return <SumOfMetricsOfFiles
           min={initialCommit} 
           max={lastCommit}
+          repo={name}
+          branch={currentBranchId}
           step={step}
         />;
 
@@ -228,6 +233,8 @@ export default function Plot() {
         return <NormalizedSumOfMetricsOfFiles
           min={initialCommit} 
           max={lastCommit}
+          repo={name}
+          branch={currentBranchId}
           step={step}
         />;
 
@@ -235,6 +242,8 @@ export default function Plot() {
         return <EvolutionOfFilesByMetrics
           min={initialCommit} 
           max={lastCommit}
+          repo={name}
+          branch={currentBranchId}
           step={step}
           metric={currentMetric}
         />;
