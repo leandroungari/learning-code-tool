@@ -89,10 +89,6 @@ export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metr
     setData(response);
 
   }, [keys, result]);
-  /*
-  
-
-  */
 
   return (
     <HistoryMetrics 

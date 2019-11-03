@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 
 import {
-  useDispatch,
   useSelector
 } from 'react-redux';
 
@@ -24,11 +23,6 @@ import {
   RepositoryData,
 } from '../../components';
 
-import { 
-  storeMetrics, 
-  storeListOfCommits 
-} from '../../action/metrics';
-
 import {
   AverageOfMetricsOfFiles,
   SumOfMetricsOfFiles,
@@ -37,15 +31,10 @@ import {
   NormalizedSumOfMetricsOfFiles
 } from './plot';
 
-import {
-  metricsOfCommit,
-  metricsOfARangeOfCommits,
-} from '../../engine/Metrics';
 
 export default function Plot() {
 
   const { name } = useParams();
-  const dispatch = useDispatch();
   const history = useHistory();
   const { plotName } = history.location.state;
 
@@ -55,11 +44,6 @@ export default function Plot() {
   const [ plot, setPlot ] = useState(null);
   const [currentMetric, setCurrentMetric] = useState(null);
   const [ step, setStep] = useState(1);
-  
-  /*const positions = [];
-  for(let i = initialCommit; i <= lastCommit; i+=step) {
-    positions.push(i);
-  }*/
 
   const listOfRepositories = useSelector(
     ({ repositories }) => repositories.listOfRepositories
@@ -82,21 +66,6 @@ export default function Plot() {
       ), 0);
   }, [commits]);
 
-  function rangeOfCommits(branch, start, end, step = 1) {
-
-    const currentBranch = branches
-      .filter(b => b.name === branch)[0];
-
-    let result = commits[currentBranch.id.name]
-    .slice(start, end+1);
-
-    if(step !== -1) {
-      result = result.filter((_,index) => index % step === 0);
-    }
-
-    return result;
-  }
-
   function getCurrentBranch() {
     return branches
       .filter(branch => branch.name === currentBranchId)[0];
@@ -117,48 +86,6 @@ export default function Plot() {
   }
 
   function handleExecuteButton() {
-    
-    /*const currentBranch = getCurrentBranch();
-    const listOfCommits = rangeOfCommits(
-      currentBranchId, 
-      initialCommit, 
-      lastCommit,
-      step
-    );
-
-    dispatch(storeListOfCommits(listOfCommits));
-    
-    setPlot(null);
-    
-    metricsOfARangeOfCommits(
-      (step === 1 ? 'diff' : 'all'),
-      name,
-      currentBranch.id.name,
-      listOfCommits.map(commit => commit.id.name)
-    )
-    //extractMetrics(listOfCommits)
-    .then(result => {  
-      //diff metrics
-      //dispatch(storeHeader(result[0].metrics)); 
-      result.forEach(({files}, index) => {
-        dispatch(storeMetrics(listOfCommits[index].id.name, files));
-      });
-      //entire commit
-      metricsOfCommit(
-        'all', 
-        name,
-        currentBranch.id.name, 
-        listOfCommits[listOfCommits.length-1].id.name
-      )
-      .then(({files}) => {
-        dispatch(storeMetrics(
-          listOfCommits[listOfCommits.length-1].id.name, 
-          files
-        ));
-        setPlot(renderPlot());
-      });
-    });*/ 
-
     setPlot(renderPlot({
       plotName, 
       currentBranchId,
@@ -250,8 +177,7 @@ export default function Plot() {
 
       default:
     }
-
-  }, []);
+  }, [name]);
 
   return (
     <>
@@ -270,9 +196,6 @@ export default function Plot() {
           numBranches={branches.length}
           numCommits={totalOfCommitsInAllBranches()}
         />
-        {
-          
-        }
         <DataArea title={getNameOfPlot()}>
           <TextField
             label="Select a branch"
