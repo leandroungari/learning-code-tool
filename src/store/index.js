@@ -1,13 +1,11 @@
 import { createStore, combineReducers } from 'redux';
 
 import {
-  repositories,
-  metrics
+  repositories
 } from '../reducers';
 
 const store = createStore(
   combineReducers({
-    metrics,
     repositories
   })
 );

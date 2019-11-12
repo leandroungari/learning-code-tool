@@ -1,4 +1,8 @@
-import React from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect
+} from 'react';
 
 import {
   useSelector
@@ -8,42 +12,70 @@ import {
   HistoryMetrics
 } from '../../../components';
 
-import {
-  sumOfMetricsOfFiles
-} from '../../../engine/Plots';
+import { server } from '../../../services';
 
-export default function AverageOfMetricsOfFiles({positions}) {
+export default function SumOfMetricsOfFiles({repo,branch,min,max,step}) {
   
-  const {
-    listOfCommits,
-    commits
-  } = useSelector(({ metrics }) => metrics);
+  const [data, setData] = useState([]);
+  const [commitIds, setCommitIds] = useState([]);
 
-  const commitsIds = listOfCommits.map(commit => commit.id.name);
-  
-  const data = sumOfMetricsOfFiles(
-    listOfCommits, 
-    Object.entries(commits).reduce((total, [id,value]) => {
-      if(commitsIds.includes(id)) {
-        total = {
-          ...total,
-          [id]: value
-        }
-      }
-      return total;
-    }, {})
+  const {branches, commits} = useSelector(
+    ({ repositories }) => repositories
   );
+
+  const branchId = useCallback(() => {
+    return branches
+      .filter(b => branch === b.name)[0]
+      .id.name;
+  }, [branch, branches]);
+
+  useEffect(() => {
+
+    let commitIds = commits[branchId()]
+      .reduce((total, a) => {
+        total = [...total, a];
+        return total; 
+      }, [])
+      .filter((_,index) => min <= index && index <= max);
+
+    if(step !== 1) {
+      commitIds = commitIds.filter((_,index) => index % step === 0);
+    }
+
+    fetch(`${server.host}/plots/sumMetricsFiles/${repo}/${branchId()}/${min}/${max}/${step}`)
+      .then(result => result.json())
+      .then(result => {
+        const data = [];
+        commitIds.reverse().forEach((id,index) => {
+          data.push(result[id]);
+        });
+      
+        setData(data);  
+      });
+
+    setCommitIds(commitIds);
+
+  }, [branch, branchId, branches, commits, max, min, repo, step]);
+
+  
+  const generatePositions = useCallback((min,max,step) => {
+    const result = [];
+    for(let i = min; i <= max; i+=step) {
+      result.push(i);
+    }
+    return result;
+  },[]);
 
   return (
     <HistoryMetrics 
-      active={true}
+      active={data.length !== 0}
       data={data}
+      width={window.innerWidth-130}
       legend={{
         rotate: -45,
-        labels: commitsIds.map(id => id.substring(0,6)).reverse()
+        labels: commitIds.map(id => id.substring(0,6))
       }}
-      width={window.innerWidth-130}
-      positions={positions.reverse()} 
+      positions={generatePositions(min,max,step).reverse()} 
     />
   );
 }

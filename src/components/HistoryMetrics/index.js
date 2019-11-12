@@ -24,7 +24,7 @@ export default function HistoryMetrics(props) {
     rotate,
     labels
   } = legend;
-
+  
   return (
     <Container {...{ width, height, active }}>
       {

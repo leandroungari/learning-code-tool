@@ -7,7 +7,6 @@ import { useDispatch } from 'react-redux';
 
 import {
   Header,
-  GlobalStyle
 } from '../../components';
 
 import {
@@ -41,11 +40,13 @@ function Home() {
 
   return (
     <>
-      <GlobalStyle />
       <Header 
         searchOptions={repositories}
-        optionAction={(_, value) => {
+        optionAction={(value) => {
           history.push(`/repository/${value}`);
+        }}
+        homeAction={() => {
+          history.push("/");
         }}
       />
     </>
