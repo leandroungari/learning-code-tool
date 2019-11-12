@@ -1,6 +1,5 @@
 import React, {
-  useEffect,
-  useState,
+  useEffect, useState, useMemo, useCallback,
 } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -15,8 +14,7 @@ import {
   Container,
   Header,
   GlobalStyle,
-  RepositoryData,
-  DataArea
+  TitlePage
 } from '../../components';
 
 import {
@@ -27,6 +25,7 @@ import {
   storeBranches, 
   storeCommits 
 } from '../../action/repositories';
+import { List, Row } from 'antd';
 
 export default function Repository() {
 
@@ -38,41 +37,69 @@ export default function Repository() {
     ({ repositories }) => repositories.listOfRepositories
   );
 
-  const [branches, setBranches] = useState([]);
-  const [commits, setCommits] = useState({});
-  const [totalOfCommits, setTotalOfCommits] = useState(0);
-  
-  useEffect(() => {
+  const [ branches, setBranches ] = useState([]);
+  const [ commits, setCommits ] = useState({});
 
-    async function obtainBranches() {
+  const listItems = useMemo(() => ([
+    {
+      title: "Average of Metrics of Files",
+      description: "",
+      onClick: () => history.push(`/plot/${name}`, { plotName: 'average-metrics-files' })
+    },
+    {
+      title: "Average of Metrics of Files (Normalized)",
+      description: "",
+      onClick: () => history.push(`/plot/${name}`, { plotName: 'normalized-average-metrics-files' })
+    },
+    {
+      title: "Sum of Metrics of Files",
+      description: "",
+      onClick: () => history.push(`/plot/${name}`, { plotName: 'sum-metrics-files' })
+    },
+    {
+      title: "Sum of Metrics of Files (Normalized)",
+      description: "",
+      onClick: () => history.push(`/plot/${name}`, { plotName: 'normalized-sum-metrics-files' })
+    },
+    {
+      title: "Evolution of Files by Metrics",
+      description: "",
+      onClick: () => history.push(`/plot/${name}`, { plotName: 'evolution-files-metrics' })
+    }
+  ]), [history, name]);
+
+  useEffect(() => {
+    fetch(`${server.host}/repo/${name}/branches`)
+    .then(result => result.json())
+    .then(branches => {  
       const result = [];
-      const branches = await fetch(`${server.host}/repo/${name}/branches`)
-        .then(result => result.json());
       for (const branch of branches) {
         if (!result.includes(branch)) {
           result.push(branch);
         }
       }
-      setBranches(result);
-      dispatch(storeBranches(result));
-    };
-    
-    obtainBranches();
-
-  }, [dispatch, name]);
+      setBranches(branches);
+    });
+  }, [name]);
 
   useEffect(() => {
+    dispatch(storeBranches(branches));
+  }, [branches, dispatch]);
 
-    async function obtainCommits() {
-      
-      const result = await branches
-        .reduce(async (result, branch) => {
-          (await result)[branch.id.name] = await fetch(`${server.host}/repo/${name}/${branch.id.name}/commits`)
-            .then(result => result.json());
-          return result;
-        }, {});
-      
-      const data = Object
+  const retrieveCommits = useCallback( async (name,branches) => {
+    return await branches
+    .reduce(async (result, branch) => {
+      (await result)[branch.id.name] = await fetch(`${server.host}/repo/${name}/${branch.id.name}/commits`)
+        .then(result => result.json());
+      return result;
+    }, {});
+  }, []);
+  
+  useEffect(() => {
+
+    retrieveCommits(name,branches)
+    .then(result => {
+      const commits = Object
       .entries(result)
       .reduce((total,[branch,commits]) => {
         return {
@@ -80,25 +107,14 @@ export default function Repository() {
           [branch]: commits.map(commit => commit.id.name)
         }
       }, {});
-      dispatch(storeCommits(data));
-      setCommits(data);
-    }
-    obtainCommits();
-  }, [name, branches, dispatch]);
+      setCommits(commits);
+    });
+
+  }, [branches, name, retrieveCommits]);
 
   useEffect(() => {
-
-    function totalOfCommitsInAllBranches() {
-      return Object
-        .entries(commits)
-        .reduce((total, [_, listOfCommits]) => {
-          return total + listOfCommits.length;
-        }, 0);
-    }
-
-    const value = totalOfCommitsInAllBranches();
-    setTotalOfCommits(value);
-  }, [commits]);
+    dispatch(storeCommits(commits));
+  }, [commits, dispatch]);
 
   return (
     <>
@@ -109,60 +125,33 @@ export default function Repository() {
           history.push(`/repository/${value}`);
         }}
       />
-      <Container
-        margin="50px"
-      >
-        <RepositoryData
-          name={name}
-          numBranches={branches.length}
-          numCommits={totalOfCommits}
-        />
-        <DataArea 
-          title="Average of Metrics of Files"
-          width={400}
-          onClick={() => {
-            history.push(`/plot/${name}`, {
-              plotName: 'average-metrics-files'
-            });
-          }}
-        ></DataArea>
-        <DataArea 
-          title="Average of Metrics of Files (Normalized)"
-          width={400}
-          onClick={() => {
-            history.push(`/plot/${name}`, {
-              plotName: 'normalized-average-metrics-files'
-            });
-          }}
-        ></DataArea>
-        <DataArea 
-          title="Sum of Metrics of Files"
-          width={400}
-          onClick={() => {
-            history.push(`/plot/${name}`, {
-              plotName: 'sum-metrics-files'
-            });
-          }}
-        ></DataArea>
-        <DataArea 
-          title="Sum of Metrics of Files (Normalized)"
-          width={400}
-          onClick={() => {
-            history.push(`/plot/${name}`, {
-              plotName: 'normalized-sum-metrics-files'
-            });
-          }}
-        ></DataArea>
-        <DataArea 
-          title="Evolution of Files by Metrics"
-          width={400}
-          onClick={() => {
-            history.push(`/plot/${name}`, {
-              plotName: 'evolution-files-metrics'
-            });
-          }}
-        ></DataArea>
-      </Container>
+      <Row style={{
+        display: 'flex', 
+        margin: 50,
+        flexDirection: 'column'
+      }}>
+        <TitlePage name={name} />
+        <Row style={{ marginTop: 30}}>
+          <List
+            style={{width: 320}}
+            size="large"
+            bordered
+            itemLayout="horizontal"
+            dataSource={listItems}
+            renderItem={item => (
+              <List.Item
+                style={{ cursor: "pointer" }}
+                onClick={item.onClick}
+              >
+                <List.Item.Meta
+                  title={item.title}
+                  description={item.description}
+                />
+              </List.Item>
+            )}
+          />
+        </Row>
+      </Row>
     </>
   );
 }

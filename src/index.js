@@ -16,6 +16,8 @@ import {
   Plot
 } from './pages';
 
+import 'antd/dist/antd.css';
+
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

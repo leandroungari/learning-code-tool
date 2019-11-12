@@ -9,6 +9,8 @@ import RepositoryData from './RepositoryData';
 import DataArea from './DataArea';
 import TextField from './TextField';
 
+import TitlePage from './TitlePage';
+
 
 export {
   Button,
@@ -20,5 +22,6 @@ export {
   TopBar,
   RepositoryData,
   DataArea,
-  HistoryMetrics
+  HistoryMetrics,
+  TitlePage
 }

@@ -1,6 +1,7 @@
 import React, { 
   useState,
-  useCallback
+  useCallback,
+  useMemo
 } from 'react';
 
 import {
@@ -12,16 +13,21 @@ import {
   useHistory
 } from 'react-router-dom';
 
+import {
+  Header,
+  TitlePage
+} from '../../components';
 
 import {
-  GlobalStyle,
-  Header,
-  Container,
-  DataArea,
-  TextField,
   Button,
-  RepositoryData,
-} from '../../components';
+  Typography,
+  Row,
+  Col,
+  AutoComplete,
+  Slider,
+  Form,
+  Select
+} from 'antd';
 
 import {
   AverageOfMetricsOfFiles,
@@ -31,6 +37,10 @@ import {
   NormalizedSumOfMetricsOfFiles
 } from './plot';
 
+
+const {
+  Title,
+} = Typography;
 
 export default function Plot() {
 
@@ -55,23 +65,14 @@ export default function Plot() {
 
   const branches = useSelector(
     ({ repositories }) => repositories.branches
-  );
+  ); 
 
-  const totalOfCommitsInAllBranches = useCallback(() => {
+  const { disabled, min, max } = useMemo(() => {
 
-    return Object
-      .entries(commits)
-      .reduce((total, [_, listOfCommits]) => (
-        total + listOfCommits.length
-      ), 0);
-  }, [commits]);
-
-  function getCurrentBranch() {
-    return branches
-      .filter(branch => branch.name === currentBranchId)[0];
-  }
-
-  function calculateRange() {
+    function getCurrentBranch() {
+      return branches
+        .filter(branch => branch.name === currentBranchId)[0];
+    }
 
     if(currentBranchId === '') return { disabled: true }
 
@@ -80,12 +81,15 @@ export default function Plot() {
     if(currentBranch === undefined) return { disabled: true }
     
     return {
+      disabled: false,
       min: 0, 
       max: commits[currentBranch.id.name].length-1
     };
-  }
+
+  }, [branches, commits, currentBranchId]);
 
   function handleExecuteButton() {
+    
     setPlot(renderPlot({
       plotName, 
       currentBranchId,
@@ -179,104 +183,110 @@ export default function Plot() {
     }
   }, [name]);
 
+  const handleFilterBranch = useCallback((input, option) => (
+    option.props.children.includes(input)
+  ), []);
+
+  const handleRangeOfCommits = useCallback(([min,max]) => {
+    setInitialCommit(min);
+    setLastCommit(max);
+  }, []);
+
+  const handleSelectMetric = useCallback((value) => {
+    setCurrentMetric(value.toLowerCase());
+  }, []);
+
+  const handleStepOfCommits = useCallback((value) => {
+    setStep(value);
+  }, []);
+
+
   return (
     <>
-      <GlobalStyle />
       <Header
         searchOptions={listOfRepositories}
         optionAction={(_, value) => {
           history.push(`/repository/${value}`);
         }}
       />
-      <Container
-        margin="50px"
-      >
-        <RepositoryData
-          name={name}
-          numBranches={branches.length}
-          numCommits={totalOfCommitsInAllBranches()}
-        />
-        <DataArea title={getNameOfPlot()}>
-          <TextField
-            label="Select a branch"
-            marginTop={20}
-            width={200}
-            options={
-              branches.map(branch => branch.name)
-            }
-            onChange={value => {
-              setCurrentBranchId(value);
-            }}
-          />
-          <Container
-            flexDirection="row"
-            justifyContent="center"
-          >
-            <TextField
-              label="Select the initial commit"
-              marginTop={20}
-              marginRight={20}
-              width={100}
-              {...calculateRange()}
-              type="range"
-              onChange={value => {
-                setInitialCommit(Number.parseInt(value));
+      <Row style={{margin: 50}}>
+        <TitlePage name={name} />
+        <Row type="flex" style={{marginTop: 20}}>
+          <Title level={4} underline>{getNameOfPlot()}</Title>
+        </Row>      
+        <Row>
+          <Form.Item label="Branch">
+            <AutoComplete 
+              placeholder="Select a branch"
+              style={{width: 200}}
+              dataSource={branches.map(branch => branch.name)}
+              onSelect={value => {
+                setCurrentBranchId(value);
               }}
+              filterOption={handleFilterBranch}
             />
-            <TextField
-              label="Select the last commit"
-              marginTop={20}
-              width={100}
-              type="range"
-              {...calculateRange()}
-              onChange={value => {
-                setLastCommit(Number.parseInt(value));
-              }}
-            />
-          </Container>
-          <Container 
-            flexDirection="row"
-            justifyContent="center"
-          >
-            <TextField
-              label="Define the step"
-              marginTop={20}
-              width={100}
-              type="range"
-              disabled={getCurrentBranch() === undefined}
-              value={step}
-              min={1}
-              max={Math.round((lastCommit-initialCommit)/10)}
-              onChange={value => {
-                setStep(Number.parseInt(value));
-              }}
-            />
-            {
-              plotName === 'evolution-files-metrics' &&
-              <TextField
-                label="Select a metric"
-                marginLeft={20}
-                marginTop={20}
-                disabled={getCurrentBranch() === undefined}
-                width={100}
-                options={['CBO','DIT','NOSI','RFC','WMC']}
-                onChange={value => {
-                  setCurrentMetric(value.toLowerCase());
-                }}
+          </Form.Item>
+        </Row>
+        <Row style={{
+          display: 'flex',
+          justifyContent: 'start',
+          flexWrap: "wrap"
+        }}>
+          <Col>
+            <Form.Item label="Range of commits">
+              <Slider 
+                range 
+                {...{min, max, disabled}} 
+                style={{width: 150}} 
+                onAfterChange={handleRangeOfCommits} 
               />
-            }
-            <Button
-              color="#fff"
-              backgroundColor="green"
-              margin="30px 0 0 20px"
-              onClick={handleExecuteButton}
-            >
-              Executar
-            </Button>
-          </Container>
-          { plot }    
-        </DataArea>
-      </Container>
+            </Form.Item>
+          </Col>
+          <Col style={{marginLeft: 20}}>
+            <Form.Item label="Step of commits">
+              <Slider 
+                {...{disabled}} 
+                min={1} 
+                max={Math.round((lastCommit-initialCommit)/10)} 
+                style={{width: 150}} 
+                onAfterChange={handleStepOfCommits}
+              />
+            </Form.Item>
+          </Col>
+          {
+            plotName === 'evolution-files-metrics' &&
+            <Col style={{marginLeft: 20}}>
+              <Form.Item label="Metric">
+                <Select 
+                  style={{width: 150}}
+                  placeholder="Select a metric"
+                  onSelect={handleSelectMetric}
+                  {...{disabled}}
+                >
+                  {
+                    ['CBO','DIT','NOSI','RFC','WMC'].map(item => (
+                      <Select.Option 
+                        key={item}
+                        value={item}
+                      >
+                        {item}
+                      </Select.Option>
+                    ))
+                  }
+                </Select>
+              </Form.Item>
+            </Col>
+          }
+        </Row>
+        <Row>
+          <Button type="primary" onClick={handleExecuteButton}>
+            Executar
+          </Button>
+        </Row>
+        <Row style={{ marginTop: 20 }}>
+          { plot }
+        </Row>
+      </Row>
     </>
   );
 }
