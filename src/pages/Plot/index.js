@@ -205,8 +205,11 @@ export default function Plot() {
     <>
       <Header
         searchOptions={listOfRepositories}
-        optionAction={(_, value) => {
+        optionAction={(value) => {
           history.push(`/repository/${value}`);
+        }}
+        homeAction={() => {
+          history.push("/");
         }}
       />
       <Row style={{margin: 50}}>

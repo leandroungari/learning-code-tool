@@ -11,9 +11,7 @@ import {
 } from 'react-redux';
 
 import {
-  Container,
   Header,
-  GlobalStyle,
   TitlePage
 } from '../../components';
 
@@ -118,11 +116,13 @@ export default function Repository() {
 
   return (
     <>
-      <GlobalStyle />
       <Header
         searchOptions={listOfRepositories}
-        optionAction={(_, value) => {
+        optionAction={(value) => {
           history.push(`/repository/${value}`);
+        }}
+        homeAction={() => {
+          history.push("/");
         }}
       />
       <Row style={{
