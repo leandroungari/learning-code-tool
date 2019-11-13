@@ -1,9 +1,8 @@
 import React, {
-  useEffect, useState, useMemo, useCallback,
+  useMemo
 } from 'react';
-import { useHistory } from 'react-router-dom';
 
-import { useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import {
   useDispatch,
@@ -15,111 +14,60 @@ import {
   TitlePage
 } from '../../components';
 
-import {
-  server
-} from '../../services';
-
 import { 
-  storeBranches, 
-  storeCommits 
-} from '../../action/repositories';
+  currentRepository
+} from '../../action';
+
 import { List, Row } from 'antd';
 
 export default function Repository() {
 
-  const { name } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const listOfRepositories = useSelector(
-    ({ repositories }) => repositories.listOfRepositories
-  );
+  const {
+    listOfRepositories
 
-  const [ branches, setBranches ] = useState([]);
-  const [ commits, setCommits ] = useState({});
+  } = useSelector(({ repositories }) => repositories);
+
+  const state = useSelector(state => state);
+  console.log(state);
 
   const listItems = useMemo(() => ([
     {
       title: "Average of Metrics of Files",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'average-metrics-files' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'average-metrics-files' })
     },
     {
       title: "Average of Metrics of Files (Normalized)",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'normalized-average-metrics-files' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'normalized-average-metrics-files' })
     },
     {
       title: "Sum of Metrics of Files",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'sum-metrics-files' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'sum-metrics-files' })
     },
     {
       title: "Sum of Metrics of Files (Normalized)",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'normalized-sum-metrics-files' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'normalized-sum-metrics-files' })
     },
     {
       title: "Evolution of Files by Metrics",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'evolution-files-metrics' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'evolution-files-metrics' })
     }
-  ]), [history, name]);
-
-  useEffect(() => {
-    fetch(`${server.host}/repo/${name}/branches`)
-    .then(result => result.json())
-    .then(branches => {  
-      const result = [];
-      for (const branch of branches) {
-        if (!result.includes(branch)) {
-          result.push(branch);
-        }
-      }
-      setBranches(branches);
-    });
-  }, [name]);
-
-  useEffect(() => {
-    dispatch(storeBranches(branches));
-  }, [branches, dispatch]);
-
-  const retrieveCommits = useCallback( async (name,branches) => {
-    return await branches
-    .reduce(async (result, branch) => {
-      (await result)[branch.id.name] = await fetch(`${server.host}/repo/${name}/${branch.id.name}/commits`)
-        .then(result => result.json());
-      return result;
-    }, {});
-  }, []);
-  
-  useEffect(() => {
-
-    retrieveCommits(name,branches)
-    .then(result => {
-      const commits = Object
-      .entries(result)
-      .reduce((total,[branch,commits]) => {
-        return {
-          ...total,
-          [branch]: commits.map(commit => commit.id.name)
-        }
-      }, {});
-      setCommits(commits);
-    });
-
-  }, [branches, name, retrieveCommits]);
-
-  useEffect(() => {
-    dispatch(storeCommits(commits));
-  }, [commits, dispatch]);
+  ]), [history]);
 
   return (
     <>
       <Header
         searchOptions={listOfRepositories}
-        optionAction={(value) => {
-          history.push(`/repository/${value}`);
+        optionAction={value => {
+          dispatch(currentRepository(value));
+          history.push(`/repository`);
         }}
         homeAction={() => {
           history.push("/");
@@ -130,7 +78,7 @@ export default function Repository() {
         margin: 50,
         flexDirection: 'column'
       }}>
-        <TitlePage name={name} />
+        <TitlePage />
         <Row style={{ marginTop: 30}}>
           <List
             style={{width: 320}}

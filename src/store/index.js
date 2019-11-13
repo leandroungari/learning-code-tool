@@ -4,10 +4,8 @@ import {
   repositories
 } from '../reducers';
 
-const store = createStore(
-  combineReducers({
-    repositories
-  })
-);
+let store = createStore(combineReducers({
+  repositories
+}));
 
 export default store;

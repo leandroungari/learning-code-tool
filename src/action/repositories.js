@@ -1,14 +1,22 @@
-
-export function storeBranches(branches) {
+export function storeRepository(name, branches, commits) {
   return {
-    type: 'SET_BRANCHES',
-    branches
+    type: 'SET_REPOSITORY_DATA',
+    name,
+    branches,
+    commits
   }
 }
 
-export function storeCommits(commits) {
+export function currentRepository(name) {
   return {
-    type: 'SET_COMMITS',
-    commits
+    name,
+    type: 'CURRENT_REPOSITORY'
+  }
+}
+
+export function listRepositories(result) {
+  return {
+    type: 'LIST_REPOSITORIES',
+    list: result
   }
 }

@@ -1,9 +1,9 @@
 import React, { 
-  useState,
   useEffect
 } from 'react';
+
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Header,
@@ -13,11 +13,19 @@ import {
   server
 } from '../../services';
 
+import { 
+  currentRepository, 
+  listRepositories 
+} from '../../action';
+
 function Home() {
   
   const history = useHistory();
   const dispatch = useDispatch();
-  const [repositories, setRepositories] = useState([]);
+
+  const repositories = useSelector(
+    ({ repositories }) => repositories.listOfRepositories
+  );
 
   useEffect(() => {
 
@@ -25,11 +33,7 @@ function Home() {
       fetch(`${server.host}/metrics/availableRepositories`)
       .then(result => result.json())
       .then(result => {
-        setRepositories(result);
-        dispatch({
-          type: 'LIST_REPOSITORIES',
-          list: result
-        });
+        dispatch(listRepositories(result));
       });
     }
 
@@ -43,7 +47,8 @@ function Home() {
       <Header 
         searchOptions={repositories}
         optionAction={(value) => {
-          history.push(`/repository/${value}`);
+          dispatch(currentRepository(value));
+          history.push(`/repository`);
         }}
         homeAction={() => {
           history.push("/");

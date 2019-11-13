@@ -5,11 +5,11 @@ import React, {
 } from 'react';
 
 import {
-  useSelector
+  useSelector,
+  useDispatch
 } from 'react-redux';
 
 import {
-  useParams,
   useHistory
 } from 'react-router-dom';
 
@@ -37,6 +37,10 @@ import {
   NormalizedSumOfMetricsOfFiles
 } from './plot';
 
+import {
+  currentRepository
+} from '../../action';
+
 
 const {
   Title,
@@ -44,8 +48,8 @@ const {
 
 export default function Plot() {
 
-  const { name } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
   const { plotName } = history.location.state;
 
   const [currentBranchId, setCurrentBranchId] = useState('');
@@ -59,18 +63,16 @@ export default function Plot() {
     ({ repositories }) => repositories.listOfRepositories
   );
 
-  const commits = useSelector(
-    ({ repositories }) => repositories.commits
-  );
+  const {
+    current:nameOfRepository,
+    repository
 
-  const branches = useSelector(
-    ({ repositories }) => repositories.branches
-  ); 
+  } = useSelector(({ repositories }) => repositories);
 
   const { disabled, min, max } = useMemo(() => {
 
     function getCurrentBranch() {
-      return branches
+      return repository.branches
         .filter(branch => branch.name === currentBranchId)[0];
     }
 
@@ -83,10 +85,10 @@ export default function Plot() {
     return {
       disabled: false,
       min: 0, 
-      max: commits[currentBranch.id.name].length-1
+      max: repository.commits[currentBranch.id.name].length-1
     };
 
-  }, [branches, commits, currentBranchId]);
+  }, [currentBranchId, repository.branches, repository.commits]);
 
   function handleExecuteButton() {
     
@@ -137,7 +139,7 @@ export default function Plot() {
         return <AverageOfMetricsOfFiles 
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
         />;
@@ -146,7 +148,7 @@ export default function Plot() {
         return <NormalizedAverageOfMetricsOfFiles  
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
         />;
@@ -155,7 +157,7 @@ export default function Plot() {
         return <SumOfMetricsOfFiles
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
         />;
@@ -164,7 +166,7 @@ export default function Plot() {
         return <NormalizedSumOfMetricsOfFiles
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
         />;
@@ -173,7 +175,7 @@ export default function Plot() {
         return <EvolutionOfFilesByMetrics
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
           metric={currentMetric}
@@ -181,7 +183,7 @@ export default function Plot() {
 
       default:
     }
-  }, [name]);
+  }, [nameOfRepository]);
 
   const handleFilterBranch = useCallback((input, option) => (
     option.props.children.includes(input)
@@ -206,14 +208,15 @@ export default function Plot() {
       <Header
         searchOptions={listOfRepositories}
         optionAction={(value) => {
-          history.push(`/repository/${value}`);
+          dispatch(currentRepository(value));
+          history.push(`/repository`);
         }}
         homeAction={() => {
           history.push("/");
         }}
       />
       <Row style={{margin: 50}}>
-        <TitlePage name={name} />
+        <TitlePage />
         <Row type="flex" style={{marginTop: 20}}>
           <Title level={4} underline>{getNameOfPlot()}</Title>
         </Row>      
@@ -222,7 +225,7 @@ export default function Plot() {
             <AutoComplete 
               placeholder="Select a branch"
               style={{width: 200}}
-              dataSource={branches.map(branch => branch.name)}
+              dataSource={repository.branches.map(branch => branch.name)}
               onSelect={value => {
                 setCurrentBranchId(value);
               }}

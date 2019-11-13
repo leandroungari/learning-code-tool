@@ -1,10 +1,21 @@
 import React, {
-  useMemo
+  useMemo,
+  useEffect,
+  useCallback
 } from 'react';
 
 import {
-  useSelector
+  useSelector,
+  useDispatch
 } from 'react-redux';
+
+import {
+  server
+} from '../../services';
+
+import { 
+  storeRepository
+} from '../../action';
 
 import {
   Typography
@@ -15,29 +26,64 @@ const {
   Text
 } = Typography;
 
-export default function TitlePage(props) {
+export default function TitlePage() {
 
-  const { name } = props;
+  const dispatch = useDispatch();
 
-  const commits = useSelector(
-    ({ repositories }) => repositories.commits
-  );
-
-  const branches = useSelector(
-    ({ repositories }) => repositories.branches
-  );
+  const {
+    repository,
+    current: name
+  } = useSelector(({ repositories }) => repositories);
 
   const numBranches = useMemo(() => {
-    return branches ? branches.length : 0;
-  }, [branches]);
+    return repository.branches ? repository.branches.length : 0;
+  }, [repository.branches]);
 
   const numCommits = useMemo(() => {
-    return commits ? Object
-      .entries(commits)
+    return repository.commits ? Object
+      .entries(repository.commits)
       .reduce((total, [_, listOfCommits]) => (
         total + listOfCommits.length
       ), 0) : 0;
-  }, [commits]);
+  }, [repository.commits]);
+
+  const retrieveCommits = useCallback( async (name,branches) => {
+    return await branches
+    .reduce(async (result, branch) => {
+      (await result)[branch.id.name] = await fetch(`${server.host}/repo/${name}/${branch.id.name}/commits`)
+        .then(result => result.json());
+      return result;
+    }, {});
+  }, []);
+
+  useEffect(() => {
+    if(name !== repository.name) {
+      console.log("name", name, repository.name)
+      fetch(`${server.host}/repo/${name}/branches`)
+      .then(result => result.json())
+      .then(branches => {  
+        
+        retrieveCommits(name,branches)
+        .then(result => {
+          const commits = Object
+          .entries(result)
+          .reduce((total,[branch,commits]) => {
+            return {
+              ...total,
+              [branch]: commits.map(commit => commit.id.name)
+            }
+          }, {});
+          
+          dispatch(storeRepository(
+            name,
+            branches,
+            commits
+          ));
+        });
+
+      });
+    }
+  }, [dispatch, name, repository.name, retrieveCommits]);
 
   return (
     <>
