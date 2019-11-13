@@ -23,8 +23,8 @@ ReactDOM.render(
     <BrowserRouter>
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route path="/repository/:name" component={Repository} />
-        <Route path="/plot/:name" component={Plot} />
+        <Route path="/repository" exact component={Repository} />
+        <Route path="/repository/plots" exact component={Plot} />
       </Switch>
     </BrowserRouter>
   </Provider>

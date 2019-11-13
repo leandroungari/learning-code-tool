@@ -1,5 +1,8 @@
+import persist from '../store/persist';
+
 const INITIAL_STATE = {
   listOfRepositories: [],
+  current: persist('CURRENT_REPOSITORY'),
   branches: [],
   commits: []
 };
@@ -7,6 +10,12 @@ const INITIAL_STATE = {
 function repositories(state = INITIAL_STATE, action) {
 
   switch(action.type) {
+
+    case 'CURRENT_REPOSITORY':
+      return {
+        ...state,
+        current: action.name
+      }
 
     case 'LIST_REPOSITORIES':
       return {

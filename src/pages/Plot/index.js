@@ -9,7 +9,6 @@ import {
 } from 'react-redux';
 
 import {
-  useParams,
   useHistory
 } from 'react-router-dom';
 
@@ -44,7 +43,6 @@ const {
 
 export default function Plot() {
 
-  const { name } = useParams();
   const history = useHistory();
   const { plotName } = history.location.state;
 
@@ -58,6 +56,12 @@ export default function Plot() {
   const listOfRepositories = useSelector(
     ({ repositories }) => repositories.listOfRepositories
   );
+
+  const nameOfRepository = useSelector(
+    ({ repositories }) => repositories.current
+  );
+
+  console.log(nameOfRepository);
 
   const commits = useSelector(
     ({ repositories }) => repositories.commits
@@ -137,7 +141,7 @@ export default function Plot() {
         return <AverageOfMetricsOfFiles 
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
         />;
@@ -146,7 +150,7 @@ export default function Plot() {
         return <NormalizedAverageOfMetricsOfFiles  
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
         />;
@@ -155,7 +159,7 @@ export default function Plot() {
         return <SumOfMetricsOfFiles
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
         />;
@@ -164,7 +168,7 @@ export default function Plot() {
         return <NormalizedSumOfMetricsOfFiles
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
         />;
@@ -173,7 +177,7 @@ export default function Plot() {
         return <EvolutionOfFilesByMetrics
           min={initialCommit} 
           max={lastCommit}
-          repo={name}
+          repo={nameOfRepository}
           branch={currentBranchId}
           step={step}
           metric={currentMetric}
@@ -181,7 +185,7 @@ export default function Plot() {
 
       default:
     }
-  }, [name]);
+  }, [nameOfRepository]);
 
   const handleFilterBranch = useCallback((input, option) => (
     option.props.children.includes(input)
@@ -213,7 +217,7 @@ export default function Plot() {
         }}
       />
       <Row style={{margin: 50}}>
-        <TitlePage name={name} />
+        <TitlePage name={nameOfRepository} />
         <Row type="flex" style={{marginTop: 20}}>
           <Title level={4} underline>{getNameOfPlot()}</Title>
         </Row>      

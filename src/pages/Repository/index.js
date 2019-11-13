@@ -1,9 +1,8 @@
 import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
-import { useHistory } from 'react-router-dom';
 
-import { useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import {
   useDispatch,
@@ -27,7 +26,7 @@ import { List, Row } from 'antd';
 
 export default function Repository() {
 
-  const { name } = useParams();
+  
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -35,6 +34,12 @@ export default function Repository() {
     ({ repositories }) => repositories.listOfRepositories
   );
 
+  const nameOfRepository = useSelector(
+    ({ repositories }) => repositories.current
+  );
+
+  console.log(nameOfRepository);
+  
   const [ branches, setBranches ] = useState([]);
   const [ commits, setCommits ] = useState({});
 
@@ -42,43 +47,45 @@ export default function Repository() {
     {
       title: "Average of Metrics of Files",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'average-metrics-files' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'average-metrics-files' })
     },
     {
       title: "Average of Metrics of Files (Normalized)",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'normalized-average-metrics-files' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'normalized-average-metrics-files' })
     },
     {
       title: "Sum of Metrics of Files",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'sum-metrics-files' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'sum-metrics-files' })
     },
     {
       title: "Sum of Metrics of Files (Normalized)",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'normalized-sum-metrics-files' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'normalized-sum-metrics-files' })
     },
     {
       title: "Evolution of Files by Metrics",
       description: "",
-      onClick: () => history.push(`/plot/${name}`, { plotName: 'evolution-files-metrics' })
+      onClick: () => history.push(`/repository/plots`, { plotName: 'evolution-files-metrics' })
     }
-  ]), [history, name]);
+  ]), [history]);
 
   useEffect(() => {
-    fetch(`${server.host}/repo/${name}/branches`)
-    .then(result => result.json())
-    .then(branches => {  
-      const result = [];
-      for (const branch of branches) {
-        if (!result.includes(branch)) {
-          result.push(branch);
+    if(nameOfRepository !== undefined) {
+      fetch(`${server.host}/repo/${nameOfRepository}/branches`)
+      .then(result => result.json())
+      .then(branches => {  
+        const result = [];
+        for (const branch of branches) {
+          if (!result.includes(branch)) {
+            result.push(branch);
+          }
         }
-      }
-      setBranches(branches);
-    });
-  }, [name]);
+        setBranches(branches);
+      });
+    }
+  }, [nameOfRepository]);
 
   useEffect(() => {
     dispatch(storeBranches(branches));
@@ -95,7 +102,7 @@ export default function Repository() {
   
   useEffect(() => {
 
-    retrieveCommits(name,branches)
+    retrieveCommits(nameOfRepository,branches)
     .then(result => {
       const commits = Object
       .entries(result)
@@ -108,7 +115,7 @@ export default function Repository() {
       setCommits(commits);
     });
 
-  }, [branches, name, retrieveCommits]);
+  }, [branches, nameOfRepository, retrieveCommits]);
 
   useEffect(() => {
     dispatch(storeCommits(commits));
@@ -118,8 +125,8 @@ export default function Repository() {
     <>
       <Header
         searchOptions={listOfRepositories}
-        optionAction={(value) => {
-          history.push(`/repository/${value}`);
+        optionAction={() => {
+          history.push(`/repository`);
         }}
         homeAction={() => {
           history.push("/");
@@ -130,7 +137,7 @@ export default function Repository() {
         margin: 50,
         flexDirection: 'column'
       }}>
-        <TitlePage name={name} />
+        <TitlePage name={nameOfRepository} />
         <Row style={{ marginTop: 30}}>
           <List
             style={{width: 320}}
