@@ -63,19 +63,12 @@ export default function Plot() {
     ({ repositories }) => repositories.listOfRepositories
   );
 
-  const nameOfRepository = useSelector(
-    ({ repositories }) => repositories.current
-  );
+  const {
+    current:nameOfRepository,
+    commits,
+    branches
 
-  console.log(nameOfRepository);
-
-  const commits = useSelector(
-    ({ repositories }) => repositories.commits
-  );
-
-  const branches = useSelector(
-    ({ repositories }) => repositories.branches
-  ); 
+  } = useSelector(({ repositories }) => repositories);
 
   const { disabled, min, max } = useMemo(() => {
 

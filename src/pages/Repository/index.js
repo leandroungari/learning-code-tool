@@ -28,18 +28,15 @@ import { List, Row } from 'antd';
 
 export default function Repository() {
 
-  
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const listOfRepositories = useSelector(
-    ({ repositories }) => repositories.listOfRepositories
-  );
+  const {
+    listOfRepositories,
+    current:nameOfRepository
 
-  const nameOfRepository = useSelector(
-    ({ repositories }) => repositories.current
-  );
-  
+  } = useSelector(({ repositories }) => repositories);
+
   const [ branches, setBranches ] = useState([]);
   const [ commits, setCommits ] = useState({});
 
