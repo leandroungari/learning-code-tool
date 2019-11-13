@@ -1,8 +1,11 @@
 const INITIAL_STATE = {
   listOfRepositories: [],
   current: undefined,
-  branches: [],
-  commits: []
+  repository: {
+    name: undefined,
+    branches: [],
+    commits: {}
+  }
 };
 
 function repositories(state = INITIAL_STATE, action) {
@@ -21,18 +24,17 @@ function repositories(state = INITIAL_STATE, action) {
         listOfRepositories: action.list
       };
     
-    case 'SET_BRANCHES':
+    case 'SET_REPOSITORY_DATA':
       return {
         ...state,
-        branches: action.branches
+        repository: {
+          name: action.name,
+          branches: action.branches,
+          commits: action.commits
+        }
+        
       }
 
-    case 'SET_COMMITS':
-      return {
-        ...state,
-        commits: action.commits
-      }
-    
     default:
       return state;
   }

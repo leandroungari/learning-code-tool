@@ -20,7 +20,7 @@ export default function NormalizedAverageOfMetricsOfFiles({repo,branch,min,max,s
   const [commitIds, setCommitIds] = useState([]);
 
   const {branches, commits} = useSelector(
-    ({ repositories }) => repositories
+    ({ repositories }) => repositories.repository
   );
 
   const branchId = useCallback(() => {

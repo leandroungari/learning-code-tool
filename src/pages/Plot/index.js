@@ -65,15 +65,14 @@ export default function Plot() {
 
   const {
     current:nameOfRepository,
-    commits,
-    branches
+    repository
 
   } = useSelector(({ repositories }) => repositories);
 
   const { disabled, min, max } = useMemo(() => {
 
     function getCurrentBranch() {
-      return branches
+      return repository.branches
         .filter(branch => branch.name === currentBranchId)[0];
     }
 
@@ -86,10 +85,10 @@ export default function Plot() {
     return {
       disabled: false,
       min: 0, 
-      max: commits[currentBranch.id.name].length-1
+      max: repository.commits[currentBranch.id.name].length-1
     };
 
-  }, [branches, commits, currentBranchId]);
+  }, [currentBranchId, repository.branches, repository.commits]);
 
   function handleExecuteButton() {
     
@@ -210,14 +209,14 @@ export default function Plot() {
         searchOptions={listOfRepositories}
         optionAction={(value) => {
           dispatch(currentRepository(value));
-          history.push(`/repository/${value}`);
+          history.push(`/repository`);
         }}
         homeAction={() => {
           history.push("/");
         }}
       />
       <Row style={{margin: 50}}>
-        <TitlePage name={nameOfRepository} />
+        <TitlePage />
         <Row type="flex" style={{marginTop: 20}}>
           <Title level={4} underline>{getNameOfPlot()}</Title>
         </Row>      
@@ -226,7 +225,7 @@ export default function Plot() {
             <AutoComplete 
               placeholder="Select a branch"
               style={{width: 200}}
-              dataSource={branches.map(branch => branch.name)}
+              dataSource={repository.branches.map(branch => branch.name)}
               onSelect={value => {
                 setCurrentBranchId(value);
               }}

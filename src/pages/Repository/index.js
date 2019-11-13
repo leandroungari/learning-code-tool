@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useState, useMemo, useCallback,
+  useMemo
 } from 'react';
 
 import { useHistory } from 'react-router-dom';
@@ -14,13 +14,7 @@ import {
   TitlePage
 } from '../../components';
 
-import {
-  server
-} from '../../services';
-
 import { 
-  storeBranches, 
-  storeCommits,
   currentRepository
 } from '../../action';
 
@@ -32,13 +26,12 @@ export default function Repository() {
   const history = useHistory();
 
   const {
-    listOfRepositories,
-    current:nameOfRepository
+    listOfRepositories
 
   } = useSelector(({ repositories }) => repositories);
 
-  const [ branches, setBranches ] = useState([]);
-  const [ commits, setCommits ] = useState({});
+  const state = useSelector(state => state);
+  console.log(state);
 
   const listItems = useMemo(() => ([
     {
@@ -68,56 +61,6 @@ export default function Repository() {
     }
   ]), [history]);
 
-  useEffect(() => {
-    if(nameOfRepository !== undefined) {
-      fetch(`${server.host}/repo/${nameOfRepository}/branches`)
-      .then(result => result.json())
-      .then(branches => {  
-        const result = [];
-        for (const branch of branches) {
-          if (!result.includes(branch)) {
-            result.push(branch);
-          }
-        }
-        setBranches(branches);
-      });
-    }
-  }, [nameOfRepository]);
-
-  useEffect(() => {
-    dispatch(storeBranches(branches));
-  }, [branches, dispatch]);
-
-  const retrieveCommits = useCallback( async (name,branches) => {
-    return await branches
-    .reduce(async (result, branch) => {
-      (await result)[branch.id.name] = await fetch(`${server.host}/repo/${name}/${branch.id.name}/commits`)
-        .then(result => result.json());
-      return result;
-    }, {});
-  }, []);
-  
-  useEffect(() => {
-
-    retrieveCommits(nameOfRepository,branches)
-    .then(result => {
-      const commits = Object
-      .entries(result)
-      .reduce((total,[branch,commits]) => {
-        return {
-          ...total,
-          [branch]: commits.map(commit => commit.id.name)
-        }
-      }, {});
-      setCommits(commits);
-    });
-
-  }, [branches, nameOfRepository, retrieveCommits]);
-
-  useEffect(() => {
-    dispatch(storeCommits(commits));
-  }, [commits, dispatch]);
-
   return (
     <>
       <Header
@@ -135,7 +78,7 @@ export default function Repository() {
         margin: 50,
         flexDirection: 'column'
       }}>
-        <TitlePage name={nameOfRepository} />
+        <TitlePage />
         <Row style={{ marginTop: 30}}>
           <List
             style={{width: 320}}

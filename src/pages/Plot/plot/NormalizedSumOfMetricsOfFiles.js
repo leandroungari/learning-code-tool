@@ -20,7 +20,7 @@ export default function NormalizedSumOfMetricsOfFiles({repo,branch,min,max,step}
   const [commitIds, setCommitIds] = useState([]);
 
   const {branches, commits} = useSelector(
-    ({ repositories }) => repositories
+    ({ repositories }) => repositories.repository
   );
 
   const branchId = useCallback(() => {

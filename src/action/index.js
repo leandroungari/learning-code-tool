@@ -1,8 +1,7 @@
 import {
   currentRepository,
   listRepositories,
-  storeBranches,
-  storeCommits
+  storeRepository
 } from './repositories';
 
 
@@ -10,6 +9,5 @@ import {
 export {
   currentRepository,
   listRepositories,
-  storeBranches,
-  storeCommits
+  storeRepository
 }

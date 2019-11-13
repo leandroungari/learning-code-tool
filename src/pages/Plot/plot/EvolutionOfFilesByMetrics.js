@@ -21,7 +21,7 @@ export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metr
   const [result, setResult] = useState([]);
 
   const {branches, commits} = useSelector(
-    ({ repositories }) => repositories
+    ({ repositories }) => repositories.repository
   );
 
   const branchId = useMemo(() => {

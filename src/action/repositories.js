@@ -1,13 +1,8 @@
-export function storeBranches(branches) {
+export function storeRepository(name, branches, commits) {
   return {
-    type: 'SET_BRANCHES',
-    branches
-  }
-}
-
-export function storeCommits(commits) {
-  return {
-    type: 'SET_COMMITS',
+    type: 'SET_REPOSITORY_DATA',
+    name,
+    branches,
     commits
   }
 }
