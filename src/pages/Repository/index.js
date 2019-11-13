@@ -20,8 +20,9 @@ import {
 
 import { 
   storeBranches, 
-  storeCommits 
-} from '../../action/repositories';
+  storeCommits,
+  currentRepository
+} from '../../action';
 
 import { List, Row } from 'antd';
 
@@ -38,8 +39,6 @@ export default function Repository() {
   const nameOfRepository = useSelector(
     ({ repositories }) => repositories.current
   );
-
-  console.log(nameOfRepository);
   
   const [ branches, setBranches ] = useState([]);
   const [ commits, setCommits ] = useState({});
@@ -126,7 +125,8 @@ export default function Repository() {
     <>
       <Header
         searchOptions={listOfRepositories}
-        optionAction={() => {
+        optionAction={value => {
+          dispatch(currentRepository(value));
           history.push(`/repository`);
         }}
         homeAction={() => {

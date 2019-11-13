@@ -5,7 +5,8 @@ import React, {
 } from 'react';
 
 import {
-  useSelector
+  useSelector,
+  useDispatch
 } from 'react-redux';
 
 import {
@@ -36,6 +37,10 @@ import {
   NormalizedSumOfMetricsOfFiles
 } from './plot';
 
+import {
+  currentRepository
+} from '../../action';
+
 
 const {
   Title,
@@ -44,6 +49,7 @@ const {
 export default function Plot() {
 
   const history = useHistory();
+  const dispatch = useDispatch();
   const { plotName } = history.location.state;
 
   const [currentBranchId, setCurrentBranchId] = useState('');
@@ -210,6 +216,7 @@ export default function Plot() {
       <Header
         searchOptions={listOfRepositories}
         optionAction={(value) => {
+          dispatch(currentRepository(value));
           history.push(`/repository/${value}`);
         }}
         homeAction={() => {

@@ -16,7 +16,7 @@ import {
 import { 
   currentRepository, 
   listRepositories 
-} from '../../action/repositories';
+} from '../../action';
 
 function Home() {
   
