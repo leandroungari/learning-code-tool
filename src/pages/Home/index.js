@@ -1,7 +1,7 @@
 import React, { 
-  useState,
   useEffect
 } from 'react';
+
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -23,15 +23,9 @@ function Home() {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const nameOfRepository = useSelector(
-    ({ repositories }) => repositories.current
-  );
-
   const repositories = useSelector(
     ({ repositories }) => repositories.listOfRepositories
   );
-
-  console.log(nameOfRepository);
 
   useEffect(() => {
 

@@ -1,5 +1,3 @@
-import persist from '../store/persist';
-
 export function storeBranches(branches) {
   return {
     type: 'SET_BRANCHES',
@@ -15,7 +13,6 @@ export function storeCommits(commits) {
 }
 
 export function currentRepository(name) {
-  persist('CURRENT_REPOSITORY', name);
   return {
     name,
     type: 'CURRENT_REPOSITORY'

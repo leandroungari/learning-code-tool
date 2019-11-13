@@ -22,6 +22,7 @@ import {
   storeBranches, 
   storeCommits 
 } from '../../action/repositories';
+
 import { List, Row } from 'antd';
 
 export default function Repository() {
