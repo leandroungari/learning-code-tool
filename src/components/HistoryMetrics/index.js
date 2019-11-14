@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container } from "../../components";
 import { ResponsiveStream } from '@nivo/stream';
 
 
@@ -26,7 +25,7 @@ export default function HistoryMetrics(props) {
   } = legend;
   
   return (
-    <Container {...{ width, height, active }}>
+    <div style={{width, height}}>
       {
         active &&
         <ResponsiveStream
@@ -159,6 +158,6 @@ export default function HistoryMetrics(props) {
           }
         />
       }
-    </Container>
+    </div>
   );
 }
