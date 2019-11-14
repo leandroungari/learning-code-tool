@@ -205,16 +205,7 @@ export default function Plot() {
 
   return (
     <>
-      <Header
-        searchOptions={listOfRepositories}
-        optionAction={(value) => {
-          dispatch(currentRepository(value));
-          history.push(`/repository`);
-        }}
-        homeAction={() => {
-          history.push("/");
-        }}
-      />
+      <Header/>
       <Row style={{margin: 50}}>
         <TitlePage />
         <Row type="flex" style={{marginTop: 20}}>

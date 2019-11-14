@@ -2,8 +2,7 @@ import React, {
   useEffect
 } from 'react';
 
-import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import {
   Header,
@@ -14,18 +13,12 @@ import {
 } from '../../services';
 
 import { 
-  currentRepository, 
   listRepositories 
 } from '../../action';
 
 function Home() {
   
-  const history = useHistory();
   const dispatch = useDispatch();
-
-  const repositories = useSelector(
-    ({ repositories }) => repositories.listOfRepositories
-  );
 
   useEffect(() => {
 
@@ -44,16 +37,7 @@ function Home() {
 
   return (
     <>
-      <Header 
-        searchOptions={repositories}
-        optionAction={(value) => {
-          dispatch(currentRepository(value));
-          history.push(`/repository`);
-        }}
-        homeAction={() => {
-          history.push("/");
-        }}
-      />
+      <Header />
     </>
   );
 }
