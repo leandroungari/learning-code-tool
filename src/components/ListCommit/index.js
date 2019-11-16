@@ -5,7 +5,8 @@ import React, {
 } from "react";
 
 import {
-  useSelector
+  useSelector,
+  useDispatch
 } from "react-redux";
 
 import {
@@ -18,14 +19,18 @@ import {
 } from 'antd';
 
 import { server } from "../../services";
+import { storeGoodCommits, storeBadCommits } from "../../action";
 
 const { Title, Text } = Typography;
 
 function Header (props) {
 
+  const dispatch = useDispatch();
+
   const { 
     title,  
-    branches
+    branches,
+    type
   } = props;
 
   const {
@@ -48,6 +53,7 @@ function Header (props) {
   }, [branches]);
 
   useEffect(() => {
+    
     if(selectOption) {
 
       const {
@@ -57,10 +63,15 @@ function Header (props) {
       fetch(`${server.host}/metrics/relevant/${repositoryName}/${id.name}/${radioGroupOption}/average`)
       .then(result => result.json())
       .then(result => {
-        console.log(result)
+        if(type === "good") {
+          dispatch(storeGoodCommits(id.name, result.good))
+        }
+        else {
+          dispatch(storeBadCommits(id.name, result.bad));
+        }
       });
     }
-  }, [radioGroupOption, repositoryName, selectOption]);
+  }, [dispatch, radioGroupOption, repositoryName, selectOption, type]);
 
   return(
     <Row style={{
@@ -117,14 +128,15 @@ export default function ListCommit(props) {
     title,
     data,
     width,
-    branches = []
+    branches = [],
+    type
   } = props;
 
   const handleCommitClick = useCallback((value) => {
     console.log(value);
   }, []);
 
-  console.log(branches);
+  console.log(data)
 
   return(
     <Row style={{
@@ -139,14 +151,17 @@ export default function ListCommit(props) {
         }}
         header={
           <Header 
-            title={title}
-            branches={branches}
+            { ... {
+              title,
+              branches,
+              type
+            }}
           />
         }
         bordered
         itemLayout="horizontal"
         size="large"
-        dataSource={data}
+        dataSource={data.filter((_,index) => index < 10)}
         renderItem={(item) => (
           <List.Item
             style={{
@@ -155,8 +170,16 @@ export default function ListCommit(props) {
             onClick={handleCommitClick}
           >
             <List.Item.Meta 
-              title={item}
+              title={Object.keys(item)[0]}
             />
+            <Text
+              style={{
+                color: "#1890ff",
+                fontSize: 12
+              }}
+            >
+              {Object.values(item)[0].toFixed(4)}
+            </Text>
           </List.Item>
         )}
       />

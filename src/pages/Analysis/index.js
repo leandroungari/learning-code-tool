@@ -25,6 +25,12 @@ function Analysis() {
     name: nameOfRepository
   } = useSelector(({repositories}) => repositories.repository);
 
+  const {
+    good,
+    bad
+  } = useSelector(({metrics}) => metrics.listCommits);
+
+
   useEffect(() => {
     fetch(`${server.host}/repo/${nameOfRepository}/branches`)
     .then(result => result.json())
@@ -38,11 +44,15 @@ function Analysis() {
         branches={branchList}
         title="List of Best Commits"
         width={600}
+        type="good"
+        data={good.list}
       />
       <ListCommit 
         branches={branchList}
         title="List of Worst Commits"
         width={600}
+        type="bad"
+        data={bad.list}
       />
     </Row>
   );

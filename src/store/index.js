@@ -1,11 +1,13 @@
 import { createStore, combineReducers } from 'redux';
 
 import {
-  repositories
+  repositories,
+  metrics
 } from '../reducers';
 
 let store = createStore(combineReducers({
-  repositories
+  repositories,
+  metrics
 }));
 
 export default store;

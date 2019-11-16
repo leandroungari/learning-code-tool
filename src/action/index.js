@@ -5,9 +5,16 @@ import {
 } from './repositories';
 
 
+import {
+  storeBadCommits,
+  storeGoodCommits
+} from "./metrics"
+
 
 export {
   currentRepository,
   listRepositories,
-  storeRepository
+  storeRepository,
+  storeBadCommits,
+  storeGoodCommits
 }
