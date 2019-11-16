@@ -2,10 +2,12 @@
 import Header from './Header';
 import HistoryMetrics from './HistoryMetrics';
 import TitlePage from './TitlePage';
+import ListCommit from './ListCommit';
 
 
 export {
   Header,
   HistoryMetrics,
-  TitlePage
+  TitlePage,
+  ListCommit
 }

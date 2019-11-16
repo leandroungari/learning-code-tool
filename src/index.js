@@ -13,7 +13,8 @@ import {
 import {
   Home,
   Repository,
-  Plot
+  Plot,
+  Analysis
 } from './pages';
 
 import 'antd/dist/antd.css';
@@ -25,6 +26,7 @@ ReactDOM.render(
         <Route path="/" exact component={Home} />
         <Route path="/repository" exact component={Repository} />
         <Route path="/repository/plots" exact component={Plot} />
+        <Route path="/repository/analysis" exact component={Analysis} />
       </Switch>
     </BrowserRouter>
   </Provider>

@@ -30,9 +30,6 @@ export default function Repository() {
 
   } = useSelector(({ repositories }) => repositories);
 
-  const state = useSelector(state => state);
-  console.log(state);
-
   const listItems = useMemo(() => ([
     {
       title: "Average of Metrics of Files",
