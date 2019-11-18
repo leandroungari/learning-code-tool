@@ -14,7 +14,8 @@ import {
   Home,
   Repository,
   Plot,
-  Analysis
+  Analysis,
+  Viewer
 } from './pages';
 
 import 'antd/dist/antd.css';
@@ -33,6 +34,9 @@ ReactDOM.render(
         </PrivateRoute>
         <PrivateRoute path="/repository/analysis" exact>
           <Analysis />
+        </PrivateRoute>
+        <PrivateRoute path="/repository/analysis/viewer" exact>
+          <Viewer />
         </PrivateRoute>
       </Switch>
     </BrowserRouter>

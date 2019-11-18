@@ -11,6 +11,10 @@ import {
   useSelector
 } from "react-redux";
 
+import {
+  useHistory
+} from "react-router-dom";
+
 import { 
   Header, 
   ListCommit 
@@ -19,6 +23,7 @@ import { server } from '../../services';
 
 function Analysis() {
 
+  const history = useHistory();
   const [ branchList, setBranchList ] = useState([]);
 
   const {
@@ -29,7 +34,6 @@ function Analysis() {
     good,
     bad
   } = useSelector(({metrics}) => metrics.listCommits);
-
 
   useEffect(() => {
     fetch(`${server.host}/repo/${nameOfRepository}/branches`)
@@ -47,7 +51,12 @@ function Analysis() {
         type="good"
         data={good.list}
         commitAction={(id) => {
-          console.log(id);
+          history.push(
+            "/repository/analysis/viewer", 
+            {
+              commit: id
+            }
+          );
         }}
       />
       <ListCommit 
@@ -57,7 +66,12 @@ function Analysis() {
         type="bad"
         data={bad.list}
         commitAction={(id) => {
-          console.log(id);
+          history.push(
+            "/repository/analysis/viewer", 
+            {
+              commit: id
+            }
+          );
         }}
       />
     </Row>

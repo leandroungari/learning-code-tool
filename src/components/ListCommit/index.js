@@ -129,12 +129,9 @@ export default function ListCommit(props) {
     data,
     width,
     branches = [],
-    type
+    type,
+    commitAction = () => {}
   } = props;
-
-  const handleCommitClick = useCallback((value) => {
-    console.log(value);
-  }, []);
 
   console.log(data)
 
@@ -167,7 +164,7 @@ export default function ListCommit(props) {
             style={{
               cursor: "pointer"
             }}
-            onClick={handleCommitClick}
+            onClick={() => commitAction(Object.keys(item)[0])}
           >
             <List.Item.Meta 
               title={Object.keys(item)[0]}
