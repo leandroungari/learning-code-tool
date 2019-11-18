@@ -46,6 +46,9 @@ function Analysis() {
         width={600}
         type="good"
         data={good.list}
+        commitAction={(id) => {
+          console.log(id);
+        }}
       />
       <ListCommit 
         branches={branchList}
@@ -53,6 +56,9 @@ function Analysis() {
         width={600}
         type="bad"
         data={bad.list}
+        commitAction={(id) => {
+          console.log(id);
+        }}
       />
     </Row>
   );
