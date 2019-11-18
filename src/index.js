@@ -18,15 +18,22 @@ import {
 } from './pages';
 
 import 'antd/dist/antd.css';
+import PrivateRoute from './components/router/PrivateRoute';
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route path="/repository" exact component={Repository} />
-        <Route path="/repository/plots" exact component={Plot} />
-        <Route path="/repository/analysis" exact component={Analysis} />
+        <PrivateRoute path="/repository" exact>
+          <Repository />
+        </PrivateRoute>
+        <PrivateRoute path="/repository/plots" exact>
+          <Plot />
+        </PrivateRoute>
+        <PrivateRoute path="/repository/analysis" exact>
+          <Analysis />
+        </PrivateRoute>
       </Switch>
     </BrowserRouter>
   </Provider>
