@@ -178,7 +178,7 @@ export default function ListCommit(props) {
                 fontSize: 12
               }}
             >
-              {Object.values(item)[0].toFixed(4)}
+              {(Object.values(item)[0]*100).toFixed(3)}%
             </Text>
           </List.Item>
         )}
