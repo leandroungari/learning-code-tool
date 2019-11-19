@@ -15,20 +15,19 @@ import {
 
 import ReactDiffViewer from "react-diff-viewer";
 import { server } from "../../services";
-import "react-diff-view/style/index.css";
 
 import {
   useSelector
 } from "react-redux";
 
 import { Row } from "antd";
+import TitleBar from "../../components/TitleBar";
 
 function Viewer() {
 
   const location = useLocation();
 
   const [ files, setFiles ] = useState([]);
-
   const { commit, type } = location.state;
 
   const {
@@ -53,6 +52,8 @@ function Viewer() {
     .then(result => setFiles(result));
   }, [branch, commit, nameOfRepository]);
 
+  console.log(files)
+
   return(
     <>
       <Header />
@@ -71,12 +72,22 @@ function Viewer() {
           }}
         >
           {
-            files.map(file => (
-              <ReactDiffViewer 
-                oldValue={file.old.content} 
-                newValue={file.new.content}
-                splitView={true}
-              />
+            files.map((file,index) => (
+              <TitleBar
+                key={index}
+                title={`${file.oldFile} -- ${file.newFile}`}
+              >
+                <ReactDiffViewer 
+                  oldValue={file.oldContent} 
+                  newValue={file.newContent}
+                  splitView={true}
+                  styles={{
+                    line: {
+                      height: 12
+                    }
+                  }}
+                />
+              </TitleBar>
             ))
           }
         </Row>
