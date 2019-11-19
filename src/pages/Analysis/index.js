@@ -50,10 +50,11 @@ function Analysis() {
         width={600}
         type="good"
         data={good.list}
-        commitAction={(id) => {
+        commitAction={(id, type) => {
           history.push(
             "/repository/analysis/viewer", 
             {
+              type,
               commit: id
             }
           );

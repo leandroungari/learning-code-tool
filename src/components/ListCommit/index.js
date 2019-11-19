@@ -19,7 +19,11 @@ import {
 } from 'antd';
 
 import { server } from "../../services";
-import { storeGoodCommits, storeBadCommits } from "../../action";
+
+import { 
+  storeGoodCommits, 
+  storeBadCommits 
+} from "../../action";
 
 const { Title, Text } = Typography;
 
@@ -133,8 +137,6 @@ export default function ListCommit(props) {
     commitAction = () => {}
   } = props;
 
-  console.log(data)
-
   return(
     <Row style={{
       display: 'flex',
@@ -158,16 +160,30 @@ export default function ListCommit(props) {
         bordered
         itemLayout="horizontal"
         size="large"
-        dataSource={data.filter((_,index) => index < 10)}
+        dataSource={
+          data
+          .filter((_,index) => index < 10)
+          .map(obj => {
+            const [
+              commit, value
+            ] = Object.entries(obj)[0];
+
+            return {
+              type,
+              commit,
+              value
+            }
+          })
+        }
         renderItem={(item) => (
           <List.Item
             style={{
               cursor: "pointer"
             }}
-            onClick={() => commitAction(Object.keys(item)[0])}
+            onClick={() => commitAction(item.commit, type)}
           >
             <List.Item.Meta 
-              title={Object.keys(item)[0]}
+              title={item.commit}
             />
             <Text
               style={{
@@ -175,7 +191,7 @@ export default function ListCommit(props) {
                 fontSize: 12
               }}
             >
-              {(Object.values(item)[0]*100).toFixed(3)}%
+              {(item.value*100).toFixed(3)}%
             </Text>
           </List.Item>
         )}
