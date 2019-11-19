@@ -13,19 +13,13 @@ import {
   useLocation
 } from "react-router-dom";
 
-import {
-  parseDiff, 
-  Diff, 
-  Hunk
-} from 'react-diff-view';
-
+import ReactDiffViewer from "react-diff-viewer";
 import { server } from "../../services";
+import "react-diff-view/style/index.css";
 
 import {
   useSelector
 } from "react-redux";
-
-import "react-diff-view/style/index.css";
 
 import { Row } from "antd";
 
@@ -56,25 +50,8 @@ function Viewer() {
   useEffect(() => {
     fetch(`${server.host}/repo/${nameOfRepository}/${branch}/${commit}/diffInCommit`)
     .then(result => result.json())
-    .then(result => setFiles(parseDiff(result)));
+    .then(result => setFiles(result));
   }, [branch, commit, nameOfRepository]);
-
-  const renderFile = useCallback(({oldRevision, newRevision, type, hunks}) => {
-    return (
-      <Diff 
-        key={oldRevision + '-' + newRevision} 
-        viewType="split" 
-        diffType={type} 
-        hunks={hunks}
-      >
-        {
-          hunks => hunks.map(
-            hunk => <Hunk key={hunk.content} hunk={hunk} />
-          )
-        }
-      </Diff>
-    );
-  }, []);
 
   return(
     <>
@@ -93,7 +70,15 @@ function Viewer() {
             fontSize: 12
           }}
         >
-          { files.map(renderFile) }
+          {
+            files.map(file => (
+              <ReactDiffViewer 
+                oldValue={file.old.content} 
+                newValue={file.new.content}
+                splitView={true}
+              />
+            ))
+          }
         </Row>
       </Row>
     </>

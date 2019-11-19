@@ -5,8 +5,9 @@
   "dependencies": {
     "@nivo/stream": "^0.59.3",
     "antd": "^3.25.1",
+    "prismjs": "^1.17.1",
     "react": "^16.10.2",
-    "react-diff-view": "^2.4.0",
+    "react-diff-viewer": "^2.0.5",
     "react-dom": "^16.10.2",
     "react-redux": "^7.1.0-rc.1",
     "react-router-dom": "^5.1.2",
