@@ -32,17 +32,17 @@ export default function AverageOfMetricsOfFiles({repo,branch,min,max,step,colorS
   useEffect(() => {
 
     let commitIds = commits[branchId()]
-      .reduce((total, a) => {
+      /*.reduce((total, a) => {
         total = [...total, a];
         return total; 
-      }, [])
+      }, [])*/
       .filter((_,index) => min <= index && index <= max);
 
     if(step !== 1) {
       commitIds = commitIds.filter((_,index) => index % step === 0);
     }
 
-    fetch(`${server.host}/plots/averageMetricsFiles/${repo}/${branchId()}/${min}/${max}/${step}`)
+    fetch(`${server.host}/plots/averageMetricsFiles/${repo}/${branchId()}/${branches.length-max}/${min}/${step}`)
       .then(result => result.json())
       .then(result => {
         const data = [];
@@ -74,7 +74,7 @@ export default function AverageOfMetricsOfFiles({repo,branch,min,max,step,colorS
         rotate: -45,
         labels: commitIds.map(id => id.substring(0,6))
       }}
-      positions={generatePositions(min,max,step).reverse()} 
+      positions={generatePositions(min,max,step)} 
       { ...{colorScheme, data}}
     />
   );

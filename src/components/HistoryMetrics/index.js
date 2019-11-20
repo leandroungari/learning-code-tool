@@ -32,7 +32,7 @@ export default function HistoryMetrics(props) {
         <ResponsiveStream
           data={data}
           curve='linear'
-          keys={keys ? keys : Object.keys(data[0])}
+          keys={keys ? keys : Object.keys(data[data.length-1])}
           margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
           axisBottom={{
             orient: 'bottom',

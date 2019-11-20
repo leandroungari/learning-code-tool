@@ -44,9 +44,9 @@ export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metr
   const commitIds = useMemo(() => {
 
     let commitIds = commits[branchId]
-      .reduce((total, a) => {
+      /*.reduce((total, a) => {
         return [...total, a];
-      }, [])
+      }, [])*/
       .filter((_,index) => min <= index && index <= max);
 
     if(step !== 1) {
