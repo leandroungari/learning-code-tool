@@ -40,6 +40,16 @@ const {
   Title,
 } = Typography;
 
+const colorSchemes = [
+  "nivo",
+  "category10",
+  "accent",
+  "dark2",
+  "paired",
+  "set1",
+  "set2"
+];
+
 export default function Plot() {
 
   const history = useHistory();
@@ -51,6 +61,7 @@ export default function Plot() {
   const [ plot, setPlot ] = useState(null);
   const [currentMetric, setCurrentMetric] = useState(null);
   const [ step, setStep] = useState(1);
+  const [ colorScheme, setColorScheme ] = useState("nivo");
 
   const {
     current:nameOfRepository,
@@ -87,9 +98,14 @@ export default function Plot() {
       initialCommit, 
       lastCommit, 
       step, 
-      currentMetric
+      currentMetric,
+      colorScheme
     }));
   }
+
+  const handleChangeColorScheme = useCallback((value) => {
+    setColorScheme(value);
+  }, []);
 
   const getNameOfPlot = useCallback(() => {
 
@@ -119,7 +135,8 @@ export default function Plot() {
     initialCommit, 
     lastCommit, 
     step, 
-    currentMetric
+    currentMetric,
+    colorScheme
   }) => {
 
     switch(plotName) {
@@ -130,7 +147,7 @@ export default function Plot() {
           max={lastCommit}
           repo={nameOfRepository}
           branch={currentBranchId}
-          step={step}
+          {...{colorScheme, step}}
         />;
 
       case 'normalized-average-metrics-files':   
@@ -139,7 +156,7 @@ export default function Plot() {
           max={lastCommit}
           repo={nameOfRepository}
           branch={currentBranchId}
-          step={step}
+          {...{colorScheme, step}}
         />;
       
       case 'sum-metrics-files':   
@@ -148,7 +165,7 @@ export default function Plot() {
           max={lastCommit}
           repo={nameOfRepository}
           branch={currentBranchId}
-          step={step}
+          {...{colorScheme, step}}
         />;
 
       case 'normalized-sum-metrics-files':
@@ -157,7 +174,7 @@ export default function Plot() {
           max={lastCommit}
           repo={nameOfRepository}
           branch={currentBranchId}
-          step={step}
+          {...{colorScheme, step}}
         />;
 
       case 'evolution-files-metrics':   
@@ -166,7 +183,7 @@ export default function Plot() {
           max={lastCommit}
           repo={nameOfRepository}
           branch={currentBranchId}
-          step={step}
+          {...{colorScheme, step}}
           metric={currentMetric}
         />;
 
@@ -283,6 +300,22 @@ export default function Plot() {
             flexDirection: "row" 
           }}
         >
+          <Select
+            defaultValue="nivo"
+            style={{ marginRight: 15, width: 120 }}
+            onChange={handleChangeColorScheme}
+          >
+            {
+              colorSchemes.map((value,key) => (
+                <Select.Option 
+                  key={key} 
+                  value={value}
+                >
+                  {value}
+                </Select.Option>
+              ))
+            }
+          </Select>
           <Button type="primary" onClick={handleExecuteButton}>
             Executar
           </Button>

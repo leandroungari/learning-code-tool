@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ResponsiveStream } from '@nivo/stream';
 
 
@@ -12,12 +12,13 @@ export default function HistoryMetrics(props) {
     keys = null,
     legend,
     legendWidth,
-    positions = []
+    positions = [],
+    colorScheme = "nivo"
   } = props;
 
-  const factor = (width-170)/(data.length-1);
-  let item = 0;
-  let itemPosition = 0;
+  const factor = useMemo(() => (width-170)/(data.length-1), [data.length, width]);
+  let item = useMemo(() => 0, []);
+  let itemPosition = useMemo(() => 0, []);
 
   const {
     rotate,
@@ -89,7 +90,7 @@ export default function HistoryMetrics(props) {
           }}
           axisLeft={{ orient: 'left', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: '', legendOffset: -40 }}
           offsetType="silhouette"
-          colors={{ scheme: (keys && keys.length > 6 ? 'red_yellow_blue' : 'nivo') }}
+          colors={{ scheme: colorScheme }}
           fillOpacity={0.85}
           borderColor={{ theme: 'background' }}
           defs={[

@@ -14,7 +14,7 @@ import {
 
 import { server } from '../../../services';
 
-export default function AverageOfMetricsOfFiles({repo,branch,min,max,step}) {
+export default function AverageOfMetricsOfFiles({repo,branch,min,max,step,colorScheme}) {
   
   const [data, setData] = useState([]);
   const [commitIds, setCommitIds] = useState([]);
@@ -69,13 +69,13 @@ export default function AverageOfMetricsOfFiles({repo,branch,min,max,step}) {
   return (
     <HistoryMetrics 
       active={data.length !== 0}
-      data={data}
       width={window.innerWidth-130}
       legend={{
         rotate: -45,
         labels: commitIds.map(id => id.substring(0,6))
       }}
       positions={generatePositions(min,max,step).reverse()} 
+      { ...{colorScheme, data}}
     />
   );
 }

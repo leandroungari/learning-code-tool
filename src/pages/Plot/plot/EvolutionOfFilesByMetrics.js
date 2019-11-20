@@ -15,7 +15,7 @@ import {
 
 import { server } from '../../../services';
 
-export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metric}) {
+export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metric, colorScheme}) {
   
   const [data, setData] = useState([]);
   const [result, setResult] = useState([]);
@@ -93,15 +93,14 @@ export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metr
   return (
     <HistoryMetrics 
       active={data.length !== 0 && keys.length !== 0}
-      data={data}
       legendWidth={0}
       width={window.innerWidth-130}
       legend={{
         rotate: -45,
         labels: commitIds.map(id => id.substring(0,6))
       }}
-      keys={keys}
       positions={generatePositions(min,max,step).reverse()} 
+      { ...{colorScheme, keys, data}}
     />
   );
 }

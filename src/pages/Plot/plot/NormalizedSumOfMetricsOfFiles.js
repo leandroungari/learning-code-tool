@@ -14,7 +14,7 @@ import {
 
 import { server } from '../../../services';
 
-export default function NormalizedSumOfMetricsOfFiles({repo,branch,min,max,step}) {
+export default function NormalizedSumOfMetricsOfFiles({repo,branch,min,max,step,colorScheme}) {
   
   const [data, setData] = useState([]);
   const [commitIds, setCommitIds] = useState([]);
@@ -69,7 +69,7 @@ export default function NormalizedSumOfMetricsOfFiles({repo,branch,min,max,step}
   return (
     <HistoryMetrics 
       active={data.length !== 0}
-      data={data}
+      { ...{colorScheme, data}}
       width={window.innerWidth-130}
       legend={{
         rotate: -45,
