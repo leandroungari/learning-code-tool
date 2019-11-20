@@ -191,6 +191,19 @@ export default function Plot() {
     setStep(value);
   }, []);
 
+  const handleExportButton = useCallback(() => {
+    const svgContent = document
+      .querySelector(".plot")
+      .innerHTML;
+
+    const file = new Blob([svgContent], { type: "text/svg" });
+    const url = window.URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "plot.svg");
+    link.click();
+  }, []);
+
 
   return (
     <>
@@ -264,12 +277,27 @@ export default function Plot() {
             </Col>
           }
         </Row>
-        <Row>
+        <Row
+          style={{ 
+            display: "flex", 
+            flexDirection: "row" 
+          }}
+        >
           <Button type="primary" onClick={handleExecuteButton}>
             Executar
           </Button>
+          {
+            plot !== null &&
+            <Button 
+              type="primary" 
+              onClick={handleExportButton}
+              style={{ marginLeft: 20 }}
+            >
+              Exportar
+            </Button>
+          }
         </Row>
-        <Row style={{ marginTop: 20 }}>
+        <Row style={{ marginTop: 20 }} className="plot">
           { plot }
         </Row>
       </Row>
