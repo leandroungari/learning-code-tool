@@ -1,6 +1,5 @@
 import React, {
   useEffect, 
-  useCallback,
   useState,
   useMemo
 } from "react";
@@ -26,7 +25,6 @@ import TitleBar from "../../components/TitleBar";
 function Viewer() {
 
   const location = useLocation();
-
   const [ files, setFiles ] = useState([]);
   const { commit, type } = location.state;
 
@@ -43,7 +41,7 @@ function Viewer() {
   }, [listCommits, type]);
 
   useEffect(() => {
-    document.title = "Learning Code Tool";
+    document.title = "Learning Code Tool";  
   }, []);
 
   useEffect(() => {
@@ -81,11 +79,6 @@ function Viewer() {
                   oldValue={file.oldContent} 
                   newValue={file.newContent}
                   splitView={true}
-                  styles={{
-                    line: {
-                      height: 12
-                    }
-                  }}
                 />
               </TitleBar>
             ))

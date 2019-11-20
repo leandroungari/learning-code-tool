@@ -5,7 +5,6 @@
   "dependencies": {
     "@nivo/stream": "^0.59.3",
     "antd": "^3.25.1",
-    "prismjs": "^1.17.1",
     "react": "^16.10.2",
     "react-diff-viewer": "^2.0.5",
     "react-dom": "^16.10.2",
@@ -34,5 +33,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }
