@@ -70,7 +70,9 @@ export default function TitlePage() {
           .reduce((total,[branch,commits]) => {
             return {
               ...total,
-              [branch]: commits.map(commit => commit.id.name)
+              [branch]: commits
+                .map(commit => commit.id.name)
+                .reduce((total, a) => ([a, ...total]), [])
             }
           }, {});
           
