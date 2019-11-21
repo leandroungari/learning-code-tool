@@ -14,7 +14,9 @@ import {
 
 import { server } from '../../../services';
 
-export default function NormalizedSumOfMetricsOfFiles({repo,branch,min,max,step,colorScheme}) {
+export default function NormalizedSumOfMetricsOfFiles(props) {
+
+  const {repo,branch,min,max,step,colorScheme} = props;
   
   const [data, setData] = useState([]);
   const [commitIds, setCommitIds] = useState([]);
@@ -32,10 +34,6 @@ export default function NormalizedSumOfMetricsOfFiles({repo,branch,min,max,step,
   useEffect(() => {
 
     let commitIds = commits[branchId()]
-      .reduce((total, a) => {
-        total = [...total, a];
-        return total; 
-      }, [])
       .filter((_,index) => min <= index && index <= max);
 
     if(step !== 1) {
@@ -43,15 +41,15 @@ export default function NormalizedSumOfMetricsOfFiles({repo,branch,min,max,step,
     }
 
     fetch(`${server.host}/plots/sumMetricsFiles/${repo}/${branchId()}/${min}/${max}/${step}/normalized`)
-      .then(result => result.json())
-      .then(result => {
-        const data = [];
-        commitIds.reverse().forEach((id,index) => {
-          data.push(result[id]);
-        });
-      
-        setData(data);  
+    .then(result => result.json())
+    .then(result => {
+      const data = [];
+      commitIds.forEach((id,index) => {
+        data.push(result[id]);
       });
+    
+      setData(data);  
+    });
 
     setCommitIds(commitIds);
 
@@ -75,7 +73,7 @@ export default function NormalizedSumOfMetricsOfFiles({repo,branch,min,max,step,
         rotate: -45,
         labels: commitIds.map(id => id.substring(0,6))
       }}
-      positions={generatePositions(min,max,step).reverse()} 
+      positions={generatePositions(min,max,step)} 
     />
   );
 }

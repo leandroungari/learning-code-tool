@@ -15,7 +15,9 @@ import {
 
 import { server } from '../../../services';
 
-export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metric, colorScheme}) {
+export default function EvolutionOfFilesByMetrics(props) {
+
+  const {repo,branch,min,max,step,metric,colorScheme} = props;
   
   const [data, setData] = useState([]);
   const [result, setResult] = useState([]);
@@ -44,9 +46,6 @@ export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metr
   const commitIds = useMemo(() => {
 
     let commitIds = commits[branchId]
-      /*.reduce((total, a) => {
-        return [...total, a];
-      }, [])*/
       .filter((_,index) => min <= index && index <= max);
 
     if(step !== 1) {
@@ -67,14 +66,14 @@ export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metr
 
   useEffect(() => {
     fetch(`${server.host}/plots/evolution/${repo}/${branchId}/${min}/${max}/${step}/${metric}`)
-      .then(result => result.json())
-      .then(result => {
-        const data = [];
-        commitIds.reverse().forEach(id => {
-          data.push(result[id]);
-        });
-        setResult(data);
+    .then(result => result.json())
+    .then(result => {
+      const data = [];
+      commitIds.forEach(id => {
+        data.push(result[id]);
       });
+      setResult(data);
+    });
   }, [branchId, commitIds, max, metric, min, repo, step]);
 
 
@@ -99,7 +98,7 @@ export default function EvolutionOfFilesByMetrics({repo,branch,min,max,step,metr
         rotate: -45,
         labels: commitIds.map(id => id.substring(0,6))
       }}
-      positions={generatePositions(min,max,step).reverse()} 
+      positions={generatePositions(min,max,step)} 
       { ...{colorScheme, keys, data}}
     />
   );

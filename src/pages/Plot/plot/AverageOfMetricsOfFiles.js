@@ -14,7 +14,9 @@ import {
 
 import { server } from '../../../services';
 
-export default function AverageOfMetricsOfFiles({repo,branch,min,max,step,colorScheme}) {
+export default function AverageOfMetricsOfFiles(props) {
+  
+  const {repo,branch,min,max,step,colorScheme} = props;
   
   const [data, setData] = useState([]);
   const [commitIds, setCommitIds] = useState([]);
@@ -34,29 +36,26 @@ export default function AverageOfMetricsOfFiles({repo,branch,min,max,step,colorS
     let commitIds = commits[branchId()]
       .filter((_,index) => min <= index && index <= max);
 
-    console.log(commitIds)
-
     if(step !== 1) {
       commitIds = commitIds.filter((_,index) => index % step === 0);
     }
 
     fetch(`${server.host}/plots/averageMetricsFiles/${repo}/${branchId()}/${min}/${max}/${step}`)
-      .then(result => result.json())
-      .then(result => {
-        
-        const data = [];
-        commitIds.forEach((id) => {
-          data.push(result[id]);
-        });
-      
-        setData(data); 
+    .then(result => result.json())
+    .then(result => {
+      console.log(result)
+      const data = [];
+      commitIds.forEach((id) => {
+        data.push(result[id]);
       });
+    
+      setData(data); 
+    });
 
     setCommitIds(commitIds);
 
   }, [branch, branchId, branches, commits, max, min, repo, step]);
 
-  
   const generatePositions = useCallback((min,max,step) => {
     const result = [];
     for(let i = min; i <= max; i+=step) {

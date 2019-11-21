@@ -32,10 +32,6 @@ export default function SumOfMetricsOfFiles({repo,branch,min,max,step,colorSchem
   useEffect(() => {
 
     let commitIds = commits[branchId()]
-      .reduce((total, a) => {
-        total = [...total, a];
-        return total; 
-      }, [])
       .filter((_,index) => min <= index && index <= max);
 
     if(step !== 1) {
@@ -43,15 +39,15 @@ export default function SumOfMetricsOfFiles({repo,branch,min,max,step,colorSchem
     }
 
     fetch(`${server.host}/plots/sumMetricsFiles/${repo}/${branchId()}/${min}/${max}/${step}`)
-      .then(result => result.json())
-      .then(result => {
-        const data = [];
-        commitIds.reverse().forEach((id,index) => {
-          data.push(result[id]);
-        });
-      
-        setData(data);  
+    .then(result => result.json())
+    .then(result => {
+      const data = [];
+      commitIds.forEach(id => {
+        data.push(result[id]);
       });
+    
+      setData(data);  
+    });
 
     setCommitIds(commitIds);
 
@@ -75,7 +71,7 @@ export default function SumOfMetricsOfFiles({repo,branch,min,max,step,colorSchem
         rotate: -45,
         labels: commitIds.map(id => id.substring(0,6))
       }}
-      positions={generatePositions(min,max,step).reverse()} 
+      positions={generatePositions(min,max,step)} 
     />
   );
 }
