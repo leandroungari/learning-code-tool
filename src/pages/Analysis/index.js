@@ -63,12 +63,10 @@ function Analysis() {
         width={600}
         type="bad"
         data={bad.list}
-        commitAction={(id) => {
+        commitAction={(id, type) => {
           history.push(
             "/repository/analysis/viewer", 
-            {
-              commit: id
-            }
+            { type, commit: id }
           );
         }}
       />
