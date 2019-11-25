@@ -19,14 +19,33 @@ import {
   useSelector
 } from "react-redux";
 
-import { Row } from "antd";
+import { 
+  Row, 
+  Typography 
+} from "antd";
+
 import TitleBar from "../../components/TitleBar";
+
+const {
+  Text,
+  Title
+} = Typography;
+
 
 function Viewer() {
 
   const location = useLocation();
   const [ files, setFiles ] = useState([]);
+  const [ info, setInfo ] = useState({
+    fullMessage: "",
+    shortMessage: "",
+    author: "",
+    email: "",
+    date: ""
+  });
   const { commit, type } = location.state;
+
+  console.log(info)
 
   const {
     name: nameOfRepository,
@@ -45,6 +64,12 @@ function Viewer() {
   }, []);
 
   useEffect(() => {
+    fetch(`${server.host}/repo/${nameOfRepository}/${branch}/${commit}/info`)
+    .then(result => result.json())
+    .then(result => setInfo(result));
+  }, [branch, commit, nameOfRepository]);
+
+  useEffect(() => {
     fetch(`${server.host}/repo/${nameOfRepository}/${branch}/${commit}/diffInCommit`)
     .then(result => result.json())
     .then(result => setFiles(result));
@@ -58,11 +83,29 @@ function Viewer() {
       <Row
         style={{
           display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
           margin: "30px 0"
         }}
       >
+        <Row
+          style={{
+            display: "flex",
+            margin: "0 30px",
+            flexDirection: "column",
+            alignSelf: "flex-start"
+          }}
+        >
+          <Title level={4}>{info.shortMessage}</Title>
+          <Text>
+            <strong>{info.id}</strong><br/>
+            Author: {info.authorName}<br/>
+            Email: {info.email}<br/>
+            Date: {info.date}<br/>
+            Description: {info.fullMessage}
+          </Text>
+
+        </Row>
         <Row
           style={{
             width: "95%",
