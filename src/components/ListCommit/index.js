@@ -160,9 +160,11 @@ export default function ListCommit(props) {
         bordered
         itemLayout="horizontal"
         size="large"
+        pagination={{
+          pageSize: 10
+        }}
         dataSource={
           data
-          .filter((_,index) => index < 10)
           .map(obj => {
             const [
               commit, value
