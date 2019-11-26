@@ -25,7 +25,8 @@ import {
   AutoComplete,
   Slider,
   Form,
-  Select
+  Select,
+  InputNumber
 } from 'antd';
 
 import {
@@ -250,12 +251,42 @@ export default function Plot() {
         }}>
           <Col>
             <Form.Item label="Range of commits">
-              <Slider 
-                range 
-                {...{min, max, disabled}} 
-                style={{width: 150}} 
-                onAfterChange={handleRangeOfCommits} 
-              />
+              <Col 
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center"
+                }}
+              >
+                <Slider 
+                  range 
+                  {...{min, max, disabled}} 
+                  style={{width: 200}} 
+                  onChange={handleRangeOfCommits} 
+                  value={[initialCommit,lastCommit]}
+                />
+                <Row
+                  style={{
+                    display: "flex",
+                    justifyContent: "center"
+                  }}
+                >
+                  <InputNumber
+                    {...{min, max, disabled}} 
+                    value={initialCommit}
+                    onChange={value => handleRangeOfCommits([value,lastCommit])}
+                  />
+                  <InputNumber
+                    {...{min, max, disabled}} 
+                    style={{ marginLeft: 10 }}
+                    value={lastCommit}
+                    onChange={value => handleRangeOfCommits([initialCommit,value])}
+                  />
+                </Row>
+              </Col>
+              <Col>
+                
+              </Col>
             </Form.Item>
           </Col>
           <Col style={{marginLeft: 20}}>
@@ -264,9 +295,24 @@ export default function Plot() {
                 {...{disabled}} 
                 min={1} 
                 max={Math.round((lastCommit-initialCommit)/10)} 
-                style={{width: 150}} 
-                onAfterChange={handleStepOfCommits}
+                style={{width: 200}} 
+                onChange={handleStepOfCommits}
+                value={step}
               />
+              <Row
+                  style={{
+                    display: "flex",
+                    justifyContent: "center"
+                  }}
+                >
+                  <InputNumber
+                    {...{disabled}} 
+                    min={1} 
+                    max={Math.round((lastCommit-initialCommit)/10)} 
+                    value={step}
+                    onChange={handleStepOfCommits}
+                  />
+                </Row>
             </Form.Item>
           </Col>
           {
