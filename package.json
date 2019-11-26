@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@nivo/line": "^0.59.3",
     "@nivo/stream": "^0.59.3",
     "antd": "^3.25.1",
     "react": "^16.10.2",
