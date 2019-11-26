@@ -15,6 +15,7 @@ import {
   Repository,
   Plot,
   Analysis,
+  Stats,
   Viewer
 } from './pages';
 
@@ -31,6 +32,9 @@ ReactDOM.render(
         </PrivateRoute>
         <PrivateRoute path="/repository/plots" exact>
           <Plot />
+        </PrivateRoute>
+        <PrivateRoute path="/repository/stats" exact>
+          <Stats />
         </PrivateRoute>
         <PrivateRoute path="/repository/analysis" exact>
           <Analysis />
