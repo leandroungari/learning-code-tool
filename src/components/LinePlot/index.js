@@ -5,21 +5,25 @@ import { ResponsiveLine } from '@nivo/line';
 
 function LinePlot(props) {
 
-  const { data } = props;
+  const { data, width = 500, height = 500 } = props;
 
   return(
-    <ResponsiveLine
+    <div
+      style={{ width, height}}
+    >
+      <ResponsiveLine
         data={data}
         margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
         xScale={{ type: 'point' }}
         yScale={{ type: 'linear', stacked: true, min: 'auto', max: 'auto' }}
         axisTop={null}
         axisRight={null}
+        enablePoints={false}
         axisBottom={{
           orient: 'bottom',
           tickSize: 5,
           tickPadding: 5,
-          tickRotation: 0,
+          tickRotation: 45,
           legend: 'transportation',
           legendOffset: 36,
           legendPosition: 'middle'
@@ -29,7 +33,7 @@ function LinePlot(props) {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'count',
+          legend: 'Number of contributors',
           legendOffset: -40,
           legendPosition: 'middle'
         }}
@@ -67,7 +71,8 @@ function LinePlot(props) {
             ]
           }
         ]}
-    />
+      />
+    </div>
   );
 }
 

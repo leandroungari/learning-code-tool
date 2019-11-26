@@ -55,6 +55,11 @@ export default function Repository() {
       title: "Evolution of Files by Metrics",
       description: "",
       onClick: () => history.push(`/repository/plots`, { plotName: 'evolution-files-metrics' })
+    },
+    {
+      title: "Stats",
+      description: "",
+      onClick: () => history.push("/repository/stats")
     }
   ]), [history]);
 
