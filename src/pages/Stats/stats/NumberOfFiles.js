@@ -1,27 +1,25 @@
-import React, { 
-  useEffect,
+import React, {
+  useState,
   useCallback,
-  useState
+  useEffect
 } from "react";
 
-import { 
-  Row, 
-  Typography, 
+import {
+  Row,
   Form,
+  Typography,
   AutoComplete
 } from "antd";
-
-import {
-  LinePlot
-} from "../../../components";
 
 import {
   useSelector
 } from "react-redux";
 
+import LinePlot from "../../../components/LinePlot";
+
 import { server } from "../../../services";
 
-function NumberOfAuthors() {
+function NumberOfFiles() {
 
   const [branch, setBranch] = useState(undefined);
   const [data, setData] = useState([]);
@@ -41,17 +39,21 @@ function NumberOfAuthors() {
 
   }, [branches]);
 
+  const handleFilterBranch = useCallback((input, option) => (
+    option.props.children.includes(input)
+  ), []);
+
   useEffect(() => {
 
     if(branch) {
 
-      fetch(`${server.host}/repo/${name}/${branch}/contributors`)
+      fetch(`${server.host}/repo/${name}/${branch}/numberOfFiles`)
       .then(result => result.json())
       .then(result => {
-        console.log(result)
+        
         setData([{
-          id: "contributors",
-          color: "hsl(93, 70%, 50%)",
+          id: "Number of files",
+          color: "red",
           data: result.map((item,index) => ({x: index, y: item}))
         }]);
       });
@@ -59,16 +61,10 @@ function NumberOfAuthors() {
     
   }, [branch, branches, commits, name]);
 
-  const handleFilterBranch = useCallback((input, option) => (
-    option.props.children.includes(input)
-  ), []);
-
   return(
     <Row>
-      <Typography.Title
-        level={4}
-      >
-        Number of contributors until the commit
+      <Typography.Title level={4}>
+          Number of files per commit
       </Typography.Title>
       <Form.Item label="Branch">
         <AutoComplete 
@@ -91,4 +87,4 @@ function NumberOfAuthors() {
   );
 }
 
-export default NumberOfAuthors;
+export default NumberOfFiles;

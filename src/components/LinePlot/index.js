@@ -19,21 +19,12 @@ function LinePlot(props) {
         axisTop={null}
         axisRight={null}
         enablePoints={false}
-        axisBottom={{
-          orient: 'bottom',
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 45,
-          legend: 'transportation',
-          legendOffset: 36,
-          legendPosition: 'middle'
-        }}
+        axisBottom={null}
         axisLeft={{
           orient: 'left',
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'Number of contributors',
           legendOffset: -40,
           legendPosition: 'middle'
         }}
@@ -47,11 +38,11 @@ function LinePlot(props) {
         useMesh={true}
         legends={[
           {
-            anchor: 'bottom-right',
+            anchor: 'bottom',
             direction: 'column',
             justify: false,
-            translateX: 100,
-            translateY: 0,
+            translateX: 0,
+            translateY: 100,
             itemsSpacing: 0,
             itemDirection: 'left-to-right',
             itemWidth: 80,

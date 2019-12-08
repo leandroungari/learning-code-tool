@@ -4,10 +4,10 @@ import React, {
 
 
 import { Header } from "../../components";
-import { Row, Typography } from "antd";
-import LinePlot from "../../components/LinePlot";
+import { Row } from "antd";
 
 import NumberOfAuthors from "./stats/NumberOfAuthors";
+import NumberOfFiles from "./stats/NumberOfFiles";
 
 function Stats() {
 
@@ -25,12 +25,7 @@ function Stats() {
       <Row style={{
         margin: 50
       }}>
-        <Typography.Title
-          level={4}
-        >
-          Number of files per commit
-        </Typography.Title>
-      
+        <NumberOfFiles />
         <NumberOfAuthors />
       </Row>
       
