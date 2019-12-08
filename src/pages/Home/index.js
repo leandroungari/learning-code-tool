@@ -23,7 +23,7 @@ function Home() {
   useEffect(() => {
 
     async function listOfRepositories() {
-      fetch(`${server.host}/metrics/availableRepositories`)
+      fetch(`${server.host}/repo/availableRepositories`)
       .then(result => result.json())
       .then(result => {
         dispatch(listRepositories(result));

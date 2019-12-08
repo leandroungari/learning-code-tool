@@ -68,6 +68,7 @@ export default function EvolutionOfFilesByMetrics(props) {
     fetch(`${server.host}/plots/evolution/${repo}/${branchId}/${min}/${max}/${step}/${metric}`)
     .then(result => result.json())
     .then(result => {
+      console.log(result);
       const data = [];
       commitIds.forEach(id => {
         data.push(result[id]);

@@ -72,6 +72,7 @@ export default function SumOfMetricsOfFiles({repo,branch,min,max,step,colorSchem
         labels: commitIds.map(id => id.substring(0,6))
       }}
       positions={generatePositions(min,max,step)} 
+      keys={["cbo","dit","nosi","rfc","wmc"]}
     />
   );
 }

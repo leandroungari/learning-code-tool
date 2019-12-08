@@ -44,30 +44,15 @@ function NumberOfAuthors() {
   useEffect(() => {
 
     if(branch) {
-      
-      const result = commits[branch].map(async commit => {
-        return await fetch(`${server.host}/repo/${name}/${branch}/${commit}/info`)
-          .then(result => result.json());
-      });
-  
-      Promise
-      .all(result)
-      .then(data => {
-        const result = data.reduce((total, commit, index) => {
-          return [
-            ...total,
-            {
-              ...(index === 0 ? {} : total[index-1]),
-              [commit.email]: ''
-            }
-          ];
-        }, []);
+
+      fetch(`${server.host}/repo/${name}/${branch}/contributors`)
+      .then(result => result.json())
+      .then(result => {
+        console.log(result)
         setData([{
           id: "contributors",
           color: "hsl(93, 70%, 50%)",
-          data: result
-            .map(item => Object.keys(item).length)
-            .map((item,index) => ({x: index, y: item}))
+          data: result.map((item,index) => ({x: index, y: item}))
         }]);
       });
     }

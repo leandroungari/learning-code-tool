@@ -74,6 +74,7 @@ export default function NormalizedSumOfMetricsOfFiles(props) {
         labels: commitIds.map(id => id.substring(0,6))
       }}
       positions={generatePositions(min,max,step)} 
+      keys={["cbo","dit","nosi","rfc","wmc"]}
     />
   );
 }

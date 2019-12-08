@@ -42,6 +42,7 @@ export default function NormalizedAverageOfMetricsOfFiles(props) {
     fetch(`${server.host}/plots/averageMetricsFiles/${repo}/${branchId()}/${min}/${max}/${step}/normalized`)
     .then(result => result.json())
     .then(result => {
+      console.log(result)
       const data = [];
       commitIds.forEach((id) => {
         data.push(result[id]);
@@ -72,6 +73,7 @@ export default function NormalizedAverageOfMetricsOfFiles(props) {
         rotate: -45,
         labels: commitIds.map(id => id.substring(0,6))
       }}
+      keys={["cbo","dit","nosi","rfc","wmc"]}
       positions={generatePositions(min,max,step)} 
     />
   );
