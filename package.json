@@ -6,6 +6,7 @@
     "@nivo/line": "^0.59.3",
     "@nivo/stream": "^0.59.3",
     "antd": "^3.25.1",
+    "html-to-image": "^0.1.1",
     "react": "^16.10.2",
     "react-diff-viewer": "^2.0.5",
     "react-dom": "^16.10.2",

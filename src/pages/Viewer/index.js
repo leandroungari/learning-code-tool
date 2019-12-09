@@ -1,7 +1,8 @@
 import React, {
   useEffect, 
   useState,
-  useMemo
+  useMemo,
+  useCallback
 } from "react";
 
 import {
@@ -21,10 +22,13 @@ import {
 
 import { 
   Row, 
-  Typography 
+  Typography, 
+  Button
 } from "antd";
 
 import TitleBar from "../../components/TitleBar";
+
+import htmlToImage from "html-to-image";
 
 const {
   Text,
@@ -75,12 +79,28 @@ function Viewer() {
     .then(result => setFiles(result));
   }, [branch, commit, nameOfRepository]);
 
-  console.log(files)
+  const saveFile = useCallback((data, name) => {
+
+    const link = document.createElement("a");
+    link.href = data;
+    link.setAttribute("download", name);
+    link.click();
+
+  }, []);
+
+  const handleExportButton = useCallback(() => {
+    
+    htmlToImage.toPng(document.querySelector("#box"), { backgroundColor: "#fff"})
+    .then(function (dataUrl) {
+      saveFile(dataUrl, "diff.png")
+    })
+  }, [saveFile]);
 
   return(
     <>
       <Header />
       <Row
+        id="box"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -128,6 +148,13 @@ function Viewer() {
           }
         </Row>
       </Row>
+      <Button 
+        type="primary" 
+        onClick={handleExportButton}
+        style={{ marginLeft: 20, marginBottom: 20 }}
+      >
+        Exportar
+      </Button>
     </>
   );
 }
