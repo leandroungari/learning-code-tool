@@ -58,7 +58,7 @@ export default function TitlePage() {
 
   useEffect(() => {
     if(name !== repository.name) {
-      console.log("name", name, repository.name)
+
       fetch(`${server.host}/repo/${name}/branches`)
       .then(result => result.json())
       .then(branches => {  
@@ -72,10 +72,12 @@ export default function TitlePage() {
               ...total,
               [branch]: commits
                 .map(commit => commit.id.name)
-                .reduce((total, a) => ([a, ...total]), [])
+                .reduce((total, a) => ([...total, a]), [])
             }
           }, {});
           
+          console.log(commits)
+
           dispatch(storeRepository(
             name,
             branches,

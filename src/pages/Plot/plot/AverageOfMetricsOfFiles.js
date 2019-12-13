@@ -43,7 +43,7 @@ export default function AverageOfMetricsOfFiles(props) {
     fetch(`${server.host}/plots/averageMetricsFiles/${repo}/${branchId()}/${min}/${max}/${step}`)
     .then(result => result.json())
     .then(result => {
-      console.log(result)
+      
       const data = [];
       commitIds.forEach((id) => {
         data.push(result[id]);
